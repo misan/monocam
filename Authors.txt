@@ -1,0 +1,3 @@
+Let's not put individual contributor names in all files.
+Instead, add your name below if you've contributed to MonoCAM.
+
