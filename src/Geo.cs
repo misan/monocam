@@ -91,8 +91,11 @@ namespace monoCAM
                p[0] = P1;
                p[1] = P2;
                p[2] = P3;
-               //calculate the missing normals
-               n = new Vector();
+               // if normal is not given, calculate it here.
+               Vector v1 = new Vector(p[0].X - p[1].X, p[0].Y - p[1].Y, p[0].Z - p[1].Z);
+               Vector v2 = new Vector(p[0].X - p[2].X, p[0].Y - p[2].Y, p[0].Z- p[2].Z);
+               n = v1.cross(v2); // the normal is in the direction of the cross product between the edge vectors
+               n = (1 / n.length()) * n; // normalize to length==1
            }
 
            public Tri(Point P1, Point P2, Point P3, Vector N)
@@ -101,7 +104,6 @@ namespace monoCAM
                p[0] = P1;
                p[1] = P2;
                p[2] = P3;
-               //calculate the missing normals
                n = N;
            }
 
