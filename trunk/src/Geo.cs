@@ -73,7 +73,6 @@ namespace monoCAM
                X = x;
                Y = y;
                Z = z;
-               n = new double[3];
            }
            public override string ToString()
            {
