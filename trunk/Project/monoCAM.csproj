@@ -51,6 +51,7 @@
     <Compile Include="src\Debug.cs" />
     <Compile Include="src\Geo.cs" />
     <Compile Include="src\Main.cs" />
+    <Compile Include="src\Renderer.cs" />
     <Compile Include="src\STL_io.cs" />
   </ItemGroup>
 </Project>
