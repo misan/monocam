@@ -9,6 +9,7 @@ namespace monoCAM
         static void Main(string[] args)
        {
         // Start here
+           Console.WriteLine("This is a test");
            Console.ReadKey();
             // first edit
         }
