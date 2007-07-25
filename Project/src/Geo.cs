@@ -54,7 +54,7 @@ namespace monoCAM
 
    }
 
-   class Geo
+   public class Geo
    {
        // this is the base class for all geometry objects
        // first some useful struct definitions:
@@ -355,7 +355,7 @@ namespace monoCAM
 
    }
 
-   class Vector
+   public class Vector
    {
        // experimental vector class for MonoCAM
        // todo: rotations? (== matrix multiplication?)

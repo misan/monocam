@@ -42,6 +42,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Tao.FreeGlut, Version=2.4.0.1, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d, processorArchitecture=MSIL" />
     <Reference Include="Tao.OpenGl, Version=2.1.0.4, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL" />
@@ -50,8 +52,19 @@
   <ItemGroup>
     <Compile Include="src\Debug.cs" />
     <Compile Include="src\Geo.cs" />
+    <Compile Include="src\GLWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\GLWindow.Designer.cs">
+      <DependentUpon>GLWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\Main.cs" />
-    <Compile Include="src\Renderer.cs" />
     <Compile Include="src\STL_io.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="src\GLWindow.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GLWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
