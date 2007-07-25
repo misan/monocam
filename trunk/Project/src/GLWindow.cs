@@ -79,19 +79,19 @@ namespace monoCAM
 
 
             // draw some coordinate axes
-            Gl.glColor3f(1, 0, 0);
+            Gl.glColor3f(1, 0, 0); // X-axis is RED
             Gl.glBegin(Gl.GL_LINES);						
             Gl.glVertex3f(0.0f, 0.0f, 0.0f);				
             Gl.glVertex3f(1.0f, 0.0f, 0.0f);				
             Gl.glEnd();
 
-            Gl.glColor3f(0, 1, 0);
+            Gl.glColor3f(0, 1, 0);  // Y-axis is GREEN
             Gl.glBegin(Gl.GL_LINES);
             Gl.glVertex3f(0.0f, 0.0f, 0.0f);
             Gl.glVertex3f(0.0f, 1.0f, 0.0f);
             Gl.glEnd();
 
-            Gl.glColor3f(0, 0, 1);
+            Gl.glColor3f(0, 0, 1); // Z-axis is BLUE
             Gl.glBegin(Gl.GL_LINES);
             Gl.glVertex3f(0.0f, 0.0f, 0.0f);
             Gl.glVertex3f(0.0f, 0.0f, 1.0f);
@@ -118,6 +118,13 @@ namespace monoCAM
                 cam.rotate_theta(-0.1);
             else if (e.KeyCode == Keys.R)  // R for right
                 cam.rotate_theta(+0.1);
+            else if (e.KeyCode == Keys.X)  // X for +X-view
+                cam.x_view(true);
+            else if ((e.Modifiers == Keys.Shift) && (e.KeyCode == Keys.X))  // shift-X for -X-view
+            { 
+                System.Console.WriteLine("shift.X!");
+                cam.x_view(false);
+            }
 
 
             GLWindow_Resize(this, null);
@@ -136,6 +143,8 @@ namespace monoCAM
             private double _theta;
             private double _fi;
             private const double r_minimum = 0.1;
+            private Vector _u = new Vector(0, 0, 1);
+
             public Camera()
             {
                 eye = new Geo.Point(0, 0, 0);
@@ -151,10 +160,17 @@ namespace monoCAM
 
             private void recalc()
             {
-                eye.X = _r * Math.Cos(_theta) * Math.Sin(_fi);
-                eye.Y = _r * Math.Sin(_theta) * Math.Sin(_fi);
-                eye.Z = _r * Math.Cos(_fi);
+                // recalculate eye position
+                eye.X = cen.X + _r * Math.Cos(_theta) * Math.Sin(_fi);
+                eye.Y = cen.Y + _r * Math.Sin(_theta) * Math.Sin(_fi);
+                eye.Z = cen.Z + _r * Math.Cos(_fi);
+
+                // recalculate up-vector
+                Vector n = new Vector(Math.Sin(_theta), -Math.Cos(_theta), 0);
+                up = n.Cross(eye - cen);
+                up.normalize();
             }
+
 
             public void zoom(double amount)
             {
@@ -162,7 +178,6 @@ namespace monoCAM
                 if (_r <= 0)
                     _r = r_minimum;
                 recalc();
-                System.Console.WriteLine("zoomed to r={0}", _r);
             }
 
             public void rotate_fi(double amount)
@@ -185,6 +200,19 @@ namespace monoCAM
                 recalc();
                 System.Console.WriteLine("rotated to theta={0}", _theta);
             }
+
+            public void x_view(bool b)
+            {
+                // set view along X-axis
+                if (b)
+                    _theta = 0;
+                else
+                    _theta = Math.PI;
+
+                _fi = Math.PI / 2;
+                recalc();
+            }
+            
 
 
         }

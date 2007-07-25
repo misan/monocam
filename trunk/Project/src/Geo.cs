@@ -74,6 +74,10 @@ namespace monoCAM
            {
                return "(" + X + " , " + Y + " , " + Z + ")";
            }
+           public static Point operator -(Point p1, Point p2)
+           {
+               return new Point(p1.X - p2.X, p1.Y - p2.Y, p1.Z - p2.Z);
+           }
        }
 
        public struct Tri // consider making it a class so we can check for null
@@ -411,6 +415,23 @@ namespace monoCAM
            double yc = z * v.x - x * v.z;
            double zc = x * v.y - y * v.x;
            return new Vector(xc, yc, zc);
+       }
+
+       public Vector Cross(Geo.Point p)
+       {
+           // cross product with point
+           // point coordinates are treated as vector coordinates
+           double xc = y * p.Z - z * p.Y;
+           double yc = z * p.X - x * p.Z;
+           double zc = x * p.Y - y * p.X;
+           return new Vector(xc, yc, zc);
+       }
+       public void normalize()
+       {
+           double l = Math.Sqrt(Math.Pow(x,2)+Math.Pow(y,2)+Math.Pow(z,2));
+           x = x / l;
+           y = y / l;
+           z = z / l;
        }
 
        public double Length()
