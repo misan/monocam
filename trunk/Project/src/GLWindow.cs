@@ -43,6 +43,9 @@ namespace monoCAM
 			       GLdouble	zFar )              distance from viewer to far clipping plane
             */
             Glu.gluPerspective(45d, aspect, 0.1d, 100.0d);
+            Gl.glMatrixMode(Gl.GL_MODELVIEW);
+            Gl.glLoadIdentity();
+            
             Glu.gluLookAt(cam.eye.X, cam.eye.Y, cam.eye.Z, cam.cen.X, cam.cen.Y, cam.cen.Z, cam.up.x, cam.up.y, cam.up.z);
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
         }
@@ -120,7 +123,8 @@ namespace monoCAM
             // don't know if these are the correct ones to call here
             // doesn't seem to work correctly on my machine...
             GLWindow_Resize(this, null);
-            GLPanel_Paint(this, null);
+            //GLPanel_Paint(this, null);
+            GLPanel.Refresh(); // this calls paint indirectly.
         }
 
         public class Camera
