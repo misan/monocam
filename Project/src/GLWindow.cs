@@ -32,12 +32,6 @@ namespace monoCAM
         {
             float aspect = (float)GLPanel.Width / (float)GLPanel.Height;
             System.Console.WriteLine("resize: {0} x {1}, aspect= {2},cam.x={3}", GLPanel.Width, GLPanel.Height, aspect, cam.eye.X);
-            
-            // make sure height or width don't go to zero
-            if (GLPanel.Width == 0)
-                GLPanel.Width = 1;
-            if (GLPanel.Height == 0)
-                GLPanel.Height = 1;
 
             // Gl.glViewport(0, 0, GLPanel.Width, GLPanel.Height);
             Gl.glMatrixMode(Gl.GL_PROJECTION);
