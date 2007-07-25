@@ -30,10 +30,10 @@ namespace monoCAM
 
         private void GLWindow_Resize(object sender, EventArgs e)
         {
-            float aspect = (float)GLPanel.Width / (float)GLPanel.Height;
+            float aspect = (float)GLPanel.Width / (float)GLPanel.Height; // THIS WILL FAIL WHEN Height == 0 !!
+
             System.Console.WriteLine("resize: {0} x {1}, aspect= {2},cam.x={3}", GLPanel.Width, GLPanel.Height, aspect, cam.eye.X);
 
-            // Gl.glViewport(0, 0, GLPanel.Width, GLPanel.Height);
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
             Gl.glViewport(0, 0, GLPanel.Width, GLPanel.Height);
@@ -67,15 +67,6 @@ namespace monoCAM
 
         private void GLPanel_Paint(object sender, PaintEventArgs e)
         {
-
-            
-            // gluLookAt
-            // gluLookAt   	(  	 eyeX  , eyeY  , eyeZ  , centerX  , centerY  , centerZ  , upX  , upY  , upZ  )
-
-            //Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            //Gl.glLoadIdentity();
-            //Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
-            //Gl.glLoadIdentity();
 
             System.Console.WriteLine("Paint! {0}",cam.eye.X);
             // here's where test stuff go.
@@ -115,13 +106,20 @@ namespace monoCAM
         private void GLPanel_KeyDown(object sender, KeyEventArgs e)
         {
             System.Console.WriteLine("you pressed: " + e.KeyCode);
-            if (e.KeyCode == Keys.Oemplus)
+            if (e.KeyCode == Keys.Oemplus)       // + for zoom in
                 cam.zoom(-0.2);
-            else if (e.KeyCode == Keys.OemMinus)
+            else if (e.KeyCode == Keys.OemMinus) // - for zoom out
                 cam.zoom(+0.2);
+            else if (e.KeyCode == Keys.D)  // D for down
+                cam.rotate_fi(+0.1);
+            else if (e.KeyCode == Keys.U)  // U for up
+                cam.rotate_fi(-0.1);
+            else if (e.KeyCode == Keys.L)  // L for left
+                cam.rotate_theta(-0.1);
+            else if (e.KeyCode == Keys.R)  // R for right
+                cam.rotate_theta(+0.1);
 
-            // don't know if these are the correct ones to call here
-            // doesn't seem to work correctly on my machine...
+
             GLWindow_Resize(this, null);
             //GLPanel_Paint(this, null);
             GLPanel.Refresh(); // this calls paint indirectly.
@@ -165,7 +163,27 @@ namespace monoCAM
                     _r = r_minimum;
                 recalc();
                 System.Console.WriteLine("zoomed to r={0}", _r);
+            }
 
+            public void rotate_fi(double amount)
+            {
+                _fi += amount;
+                if (_fi >= Math.PI)
+                    _fi = Math.PI;
+                else if (_fi <= 0)
+                    _fi = 0;
+
+                recalc();
+                System.Console.WriteLine("rotated to fi={0}", _fi);
+            }
+
+
+            public void rotate_theta(double amount)
+            {
+                _theta += amount;
+
+                recalc();
+                System.Console.WriteLine("rotated to theta={0}", _theta);
             }
 
 
