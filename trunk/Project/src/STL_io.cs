@@ -6,10 +6,12 @@ namespace monoCAM
 {
    class STL
    {
-       static public STLSurf Load(string FileName) {
+       static public STLSurf Load(System.IO.StreamReader fs)
+       {
            // Here's where autodetection will be provided for loading binary stl files and by wrapping STLA(scii) and STLB(inary)
            // but for now as only one format is provided, not bothering with it, we need to define a object format for handling file loading/saving
-           System.IO.StreamReader fs = new System.IO.StreamReader(FileName);
+           // System.IO.StreamReader fs = new System.IO.StreamReader(FileName);
+
            STLSurf surf = new STLSurf();
            int state = 0;
            int counter = 0;
@@ -18,7 +20,7 @@ namespace monoCAM
            Vector normal = new Vector();
 
            System.Globalization.CultureInfo locale =  new System.Globalization.CultureInfo("en-GB");
-
+           int n_triangles=0;
            while ( !fs.EndOfStream ) {
                data = fs.ReadLine().TrimStart(' ').Split(' ');
 
@@ -57,6 +59,8 @@ namespace monoCAM
                            if (counter == 2)
                            {
                                surf.AddTriangle(triangle);
+                               n_triangles += 1;
+
                            }
                            state = 1;
                        }
@@ -64,6 +68,7 @@ namespace monoCAM
                }
            }
            fs.Close();
+           System.Console.WriteLine("STLReader: read {0} triangles!",n_triangles);
            return (surf);
        }
 

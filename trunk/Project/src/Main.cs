@@ -6,6 +6,7 @@ namespace monoCAM
 { 
     class Program
     {
+        [STAThread] // required so that file-open dialog works (?)
         static void Main(string[] args)
         {
             
