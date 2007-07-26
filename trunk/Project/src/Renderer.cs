@@ -44,7 +44,7 @@ namespace RenderTest
                     case 2:
                         for (int n = 0; n < data.Points.Length; n++)
                         {
-                            Gl.glVertex3d(data.Points[n].X, data.Points[n].Y, data.Points[n].Z);
+                            Gl.glVertex3d(data.Points[n].x, data.Points[n].y, data.Points[n].z);
                         }
                         state = 3;
                         break;

@@ -32,7 +32,7 @@ namespace monoCAM
         {
             float aspect = (float)GLPanel.Width / (float)GLPanel.Height; // THIS WILL FAIL WHEN Height == 0 !!
 
-            System.Console.WriteLine("resize: {0} x {1}, aspect= {2},cam.x={3}", GLPanel.Width, GLPanel.Height, aspect, cam.eye.X);
+            System.Console.WriteLine("resize: {0} x {1}, aspect= {2},cam.x={3}", GLPanel.Width, GLPanel.Height, aspect, cam.eye.x);
 
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
@@ -46,7 +46,7 @@ namespace monoCAM
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             
-            Glu.gluLookAt(cam.eye.X, cam.eye.Y, cam.eye.Z, cam.cen.X, cam.cen.Y, cam.cen.Z, cam.up.x, cam.up.y, cam.up.z);
+            Glu.gluLookAt(cam.eye.x, cam.eye.y, cam.eye.z, cam.cen.x, cam.cen.y, cam.cen.z, cam.up.x, cam.up.y, cam.up.z);
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
         }
 
@@ -68,7 +68,7 @@ namespace monoCAM
         private void GLPanel_Paint(object sender, PaintEventArgs e)
         {
 
-            System.Console.WriteLine("Paint! {0}",cam.eye.X);
+            System.Console.WriteLine("Paint! {0}",cam.eye.x);
             // here's where test stuff go.
             Gl.glColor3f(1, 0, 0);
             Gl.glBegin(Gl.GL_TRIANGLES);						// Drawing Using Triangles
@@ -174,9 +174,9 @@ namespace monoCAM
             private void recalc()
             {
                 // recalculate eye position
-                eye.X = cen.X + _r * Math.Cos(_theta) * Math.Sin(_fi);
-                eye.Y = cen.Y + _r * Math.Sin(_theta) * Math.Sin(_fi);
-                eye.Z = cen.Z + _r * Math.Cos(_fi);
+                eye.x = cen.x + _r * Math.Cos(_theta) * Math.Sin(_fi);
+                eye.y = cen.y + _r * Math.Sin(_theta) * Math.Sin(_fi);
+                eye.z = cen.z + _r * Math.Cos(_fi);
 
                 // recalculate up-vector
                 Vector n = new Vector(Math.Sin(_theta), -Math.Cos(_theta), 0);
@@ -199,17 +199,17 @@ namespace monoCAM
                 // move cen to the left
                 Vector v = up.Cross(eye - cen);
                 v.normalize();
-                cen.X += amount * v.x;
-                cen.Y += amount * v.y;
-                cen.Z += amount * v.z;
+                cen.x += amount * v.x;
+                cen.y += amount * v.y;
+                cen.z += amount * v.z;
                 recalc();
             }
             public void pan_ud(double amount)
             {
                 // move cen to the left
-                cen.X += amount * up.x;
-                cen.Y += amount * up.y;
-                cen.Z += amount * up.z;
+                cen.x += amount * up.x;
+                cen.y += amount * up.y;
+                cen.z += amount * up.z;
                 recalc();
             }
 

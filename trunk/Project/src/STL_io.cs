@@ -45,9 +45,9 @@ namespace monoCAM
                        if (data[0].Equals("vertex"))
                        {
                            if ( counter < 2 ) {
-                               triangle.p[counter].X = double.Parse(data[1], locale);
-                               triangle.p[counter].Y = double.Parse(data[2], locale);
-                               triangle.p[counter].Z = double.Parse(data[3], locale);
+                               triangle.p[counter].x = double.Parse(data[1], locale);
+                               triangle.p[counter].y = double.Parse(data[2], locale);
+                               triangle.p[counter].z = double.Parse(data[3], locale);
                                counter++;
                            }
 
