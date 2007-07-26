@@ -298,6 +298,7 @@ namespace monoCAM
 
         }
 
+
         private void openSTLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Console.WriteLine("opening STL");
@@ -315,6 +316,7 @@ namespace monoCAM
                 dlist.Add((int)s.gldata[0].dlistID);           // add it to the list of displayed lists
             }
         }
+
 
         static public System.IO.StreamReader file_open()
             {

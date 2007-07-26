@@ -46,17 +46,19 @@ namespace monoCAM
                    case 2:
                        if (data[0].Equals("vertex"))
                        {
-                           if ( counter < 2 ) {
+                           if ( counter <= 2 ) {
                                triangle.p[counter].x = double.Parse(data[1], locale);
                                triangle.p[counter].y = double.Parse(data[2], locale);
                                triangle.p[counter].z = double.Parse(data[3], locale);
+                               // System.Console.WriteLine("STLReader: added point" + triangle.p[counter]);
+                               // System.Console.ReadKey();
                                counter++;
                            }
 
 
                        } else if (data[0].Equals("endfacet"))
                        {
-                           if (counter == 2)
+                           if (counter == 3)
                            {
                                surf.AddTriangle(triangle);
                                n_triangles += 1;
