@@ -12,11 +12,14 @@ namespace monoCAM
     public partial class GLWindow : Form
     {
         public Camera cam;
+        public List<int> dlist;
 
         public GLWindow()
         {
             InitializeComponent();
             cam = new Camera();
+            dlist = new List<int>();
+
             GLPanel.InitializeContexts();
             Gl.glShadeModel(Gl.GL_SMOOTH);
             Gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -69,13 +72,28 @@ namespace monoCAM
         {
 
             System.Console.WriteLine("Paint! {0}",cam.eye.x);
-            // here's where test stuff go.
+            // this is where all drawing happens.
+
+            /*
             Gl.glColor3f(1, 0, 0);
             Gl.glBegin(Gl.GL_TRIANGLES);						// Drawing Using Triangles
             Gl.glVertex3f(0.0f, 1.0f, 0.0f);				// Top
             Gl.glVertex3f(-1.0f, -1.0f, 0.0f);				// Bottom Left
             Gl.glVertex3f(1.0f, -1.0f, 0.0f);				// Bottom Right
             Gl.glEnd();							// Finished Drawing The Triangle
+            */
+
+            // run through the dislpaylists:
+
+            // let's draw in wireframe mode
+            Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_LINE);
+
+            foreach (int l in dlist)
+            {
+                
+
+                Gl.glCallList(l);
+            }
 
 
             // draw some coordinate axes
@@ -284,8 +302,18 @@ namespace monoCAM
         {
             System.Console.WriteLine("opening STL");
             System.IO.StreamReader rdr = file_open();
+            STLSurf s=null;
             if (rdr != null)
-                STL.Load(rdr);
+                s = STL.Load(rdr);
+
+            if (s != null)
+            {
+                System.Console.WriteLine("Adding STL surface to geo-collection!");
+
+                Renderer.MakeRenderList(ref s.gldata[0]); // make the display-list
+
+                dlist.Add((int)s.gldata[0].dlistID);           // add it to the list of displayed lists
+            }
         }
 
         static public System.IO.StreamReader file_open()
@@ -303,13 +331,6 @@ namespace monoCAM
                         strm = new System.IO.FileStream(ofn.FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
                         System.IO.StreamReader rdr = new System.IO.StreamReader(strm);
                         return rdr;
-                        /*
-                        while (rdr.Peek() >= 0)
-                        {
-                            string str = rdr.ReadLine();
-                            Console.WriteLine(str);
-                        }
-                        */
                     }
                     catch (Exception)
                     {
