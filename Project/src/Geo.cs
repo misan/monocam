@@ -61,22 +61,22 @@ namespace monoCAM
 
        public struct Point
        {
-           public double X;
-           public double Y;
-           public double Z;
-           public Point(double x, double y, double z)
+           public double x;
+           public double y;
+           public double z;
+           public Point(double X, double Y, double Z)
            {
-               X = x;
-               Y = y;
-               Z = z;
+               x = X;
+               y = Y;
+               z = Z;
            }
            public override string ToString()
            {
-               return "(" + X + " , " + Y + " , " + Z + ")";
+               return "(" + x + " , " + y + " , " + z + ")";
            }
            public static Point operator -(Point p1, Point p2)
            {
-               return new Point(p1.X - p2.X, p1.Y - p2.Y, p1.Z - p2.Z);
+               return new Point(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
            }
        }
 
@@ -92,8 +92,8 @@ namespace monoCAM
                p[1] = P2;
                p[2] = P3;
                // if normal is not given, calculate it here.
-               Vector v1 = new Vector(p[0].X - p[1].X, p[0].Y - p[1].Y, p[0].Z - p[1].Z);
-               Vector v2 = new Vector(p[0].X - p[2].X, p[0].Y - p[2].Y, p[0].Z- p[2].Z);
+               Vector v1 = new Vector(p[0].x - p[1].x, p[0].y - p[1].y, p[0].z - p[1].z);
+               Vector v2 = new Vector(p[0].x - p[2].x, p[0].y - p[2].y, p[0].z- p[2].z);
                n = v1.Cross(v2); // the normal is in the direction of the cross product between the edge vectors
                n = (1 / n.Length()) * n; // normalize to length==1
            }
@@ -125,9 +125,9 @@ namespace monoCAM
 
        public struct glColor
        {
-           public float R;
-           public float G;
-           public float B;
+           public float r;
+           public float g;
+           public float b;
        }
 
        public enum glType : int
@@ -205,7 +205,7 @@ namespace monoCAM
                System.Console.Write("type=" + t);
 
                // print out the color
-               System.Console.Write(" color=(" + gldata[n].color.R + "," + gldata[n].color.G + "," + gldata[n].color.B + ")");
+               System.Console.Write(" color=(" + gldata[n].color.r + "," + gldata[n].color.g + "," + gldata[n].color.b + ")");
 
                // print out how many points with this type and color
                System.Console.Write(" N={0} points: {1}\n", gldata[n].Points.Length, gldata[n].shown ? "(shown)" : "(hidden)");
@@ -213,7 +213,7 @@ namespace monoCAM
                // loop through the points and print the coordinates
                for (int m = 0; m < gldata[n].Points.Length; m++)
                {
-                   System.Console.Write("\t\t(" + gldata[n].Points[m].X + "," + gldata[n].Points[m].Y + "," + gldata[n].Points[m].Z + ")\n");
+                   System.Console.Write("\t\t(" + gldata[n].Points[m].x + "," + gldata[n].Points[m].y + "," + gldata[n].Points[m].z + ")\n");
                }
 
                //System.Console.Write("\n");
@@ -243,12 +243,12 @@ namespace monoCAM
            gldata = new glList[1]; // we only need one glList for drawing a point
            gldata[0].type = glType.GL_POINTS;
            gldata[0].Points = new Point[1]; // we only need one point
-           gldata[0].Points[0].X = x;
-           gldata[0].Points[0].Y = y;
-           gldata[0].Points[0].Z = z;
-           gldata[0].color.R = 11;
-           gldata[0].color.G = 22;
-           gldata[0].color.B = 33;
+           gldata[0].Points[0].x = x;
+           gldata[0].Points[0].y = y;
+           gldata[0].Points[0].z = z;
+           gldata[0].color.r = 11;
+           gldata[0].color.g = 22;
+           gldata[0].color.b = 33;
            gldata[0].shown = true;
        }
        public void SetName(string s)
@@ -265,14 +265,14 @@ namespace monoCAM
 
        public void SetPos(double X, double Y, double Z)
        {
-           p.X = X;
-           p.Y = Y;
-           p.Z = Z;
+           p.x = X;
+           p.y = Y;
+           p.z = Z;
        }
 
        public override string ToString()
        {
-           return "GeoPoint " + name + " at (" + p.X + " , " + p.Y + " , " + p.Z + ")";
+           return "GeoPoint " + name + " at (" + p.x + " , " + p.y + " , " + p.z + ")";
        }
 
    }
@@ -304,7 +304,7 @@ namespace monoCAM
 
        public double Length()
        {
-           return Math.Sqrt(Math.Pow(start.X - end.X, 2) + Math.Pow(start.Y - end.Y, 2) + Math.Pow(start.Z - end.Z, 2));
+           return Math.Sqrt(Math.Pow(start.x - end.x, 2) + Math.Pow(start.y - end.y, 2) + Math.Pow(start.z - end.z, 2));
        }
 
    }
@@ -332,14 +332,14 @@ namespace monoCAM
            int n = 0;
            foreach (Tri t in tris)
            {
-               gldata[0].Points[n] = new Point(t.p[0].X, t.p[0].Y, t.p[0].Z);
-               gldata[0].Points[n + 1] = new Point(t.p[1].X, t.p[1].Y, t.p[1].Z);
-               gldata[0].Points[n + 2] = new Point(t.p[2].X, t.p[2].Y, t.p[2].Z);
+               gldata[0].Points[n] = new Point(t.p[0].x, t.p[0].y, t.p[0].z);
+               gldata[0].Points[n + 1] = new Point(t.p[1].x, t.p[1].y, t.p[1].z);
+               gldata[0].Points[n + 2] = new Point(t.p[2].x, t.p[2].y, t.p[2].z);
                n += 3;
            }
-           gldata[0].color.R = 11;
-           gldata[0].color.G = 22;
-           gldata[0].color.B = 33;
+           gldata[0].color.r = 11;
+           gldata[0].color.g = 22;
+           gldata[0].color.b = 33;
            gldata[0].shown = true;
        }
 
@@ -421,9 +421,9 @@ namespace monoCAM
        {
            // cross product with point
            // point coordinates are treated as vector coordinates
-           double xc = y * p.Z - z * p.Y;
-           double yc = z * p.X - x * p.Z;
-           double zc = x * p.Y - y * p.X;
+           double xc = y * p.z - z * p.y;
+           double yc = z * p.x - x * p.z;
+           double zc = x * p.y - y * p.x;
            return new Vector(xc, yc, zc);
        }
        public void normalize()
