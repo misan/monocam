@@ -120,17 +120,30 @@ namespace monoCAM
                 cam.rotate_theta(+0.1);
             else if (e.KeyCode == Keys.X)  // X for +X-view
                 cam.x_view(true);
-            else if ((e.Modifiers == Keys.Shift) && (e.KeyCode == Keys.X))  // shift-X for -X-view
-            { 
-                System.Console.WriteLine("shift.X!");
+            else if ((e.Shift == true) && (e.KeyCode == Keys.X))  // shift-X for -X-view
+            {
+                System.Console.WriteLine("shift.X!"); //WE NEVER GET HERE.... FIXME
                 cam.x_view(false);
             }
+            else if (e.KeyCode == Keys.Y)  // Y for +Y-view
+                cam.y_view(true);
+            else if (e.KeyCode == Keys.Z)  // Z for +Z-view
+                cam.z_view(true);
+            else if (e.KeyCode == Keys.A) // pan left
+                cam.pan_lr(-0.03);
+            else if (e.KeyCode == Keys.S) // pan right
+                cam.pan_lr(+0.03);
+            else if (e.KeyCode == Keys.Q) // pan up
+                cam.pan_ud(+0.03);
+            else if (e.KeyCode == Keys.W) // pan down
+                cam.pan_ud(-0.03);
 
 
             GLWindow_Resize(this, null);
             //GLPanel_Paint(this, null);
             GLPanel.Refresh(); // this calls paint indirectly.
         }
+
 
         public class Camera
         {
@@ -169,6 +182,7 @@ namespace monoCAM
                 Vector n = new Vector(Math.Sin(_theta), -Math.Cos(_theta), 0);
                 up = n.Cross(eye - cen);
                 up.normalize();
+                System.Console.WriteLine("Camera: cen=" + cen + " eye=" + eye);
             }
 
 
@@ -177,6 +191,25 @@ namespace monoCAM
                 _r += amount;
                 if (_r <= 0)
                     _r = r_minimum;
+                recalc();
+            }
+
+            public void pan_lr(double amount)
+            {
+                // move cen to the left
+                Vector v = up.Cross(eye - cen);
+                v.normalize();
+                cen.X += amount * v.x;
+                cen.Y += amount * v.y;
+                cen.Z += amount * v.z;
+                recalc();
+            }
+            public void pan_ud(double amount)
+            {
+                // move cen to the left
+                cen.X += amount * up.x;
+                cen.Y += amount * up.y;
+                cen.Z += amount * up.z;
                 recalc();
             }
 
@@ -189,7 +222,7 @@ namespace monoCAM
                     _fi = 0;
 
                 recalc();
-                System.Console.WriteLine("rotated to fi={0}", _fi);
+                // System.Console.WriteLine("rotated to fi={0}", _fi);
             }
 
 
@@ -198,12 +231,14 @@ namespace monoCAM
                 _theta += amount;
 
                 recalc();
-                System.Console.WriteLine("rotated to theta={0}", _theta);
+                // System.Console.WriteLine("rotated to theta={0}", _theta);
             }
 
             public void x_view(bool b)
             {
                 // set view along X-axis
+                // if b== true along +X axis
+                // if b==false along -X axis
                 if (b)
                     _theta = 0;
                 else
@@ -212,10 +247,39 @@ namespace monoCAM
                 _fi = Math.PI / 2;
                 recalc();
             }
+
+            public void y_view(bool b)
+            {
+                // set view along Y-axis
+                // if b== true along +Y axis
+                // if b==false along -Y axis
+                if (b)
+                    _theta = Math.PI/2;
+                else
+                    _theta = 3*Math.PI/2;
+
+                _fi = Math.PI / 2;
+                recalc();
+            }
+
+            public void z_view(bool b)
+            {
+                // set view along Y-axis
+                // if b== true along +Y axis
+                // if b==false along -Y axis
+                if (b)
+                    _fi = 0;
+                else
+                    _fi = Math.PI;
+
+                _theta = 0;
+                recalc();
+            }
             
 
 
         }
+
 
 
 
