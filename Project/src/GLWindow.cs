@@ -280,7 +280,47 @@ namespace monoCAM
 
         }
 
+        private void openSTLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Console.WriteLine("opening STL");
+            System.IO.StreamReader rdr = file_open();
+            if (rdr != null)
+                STL.Load(rdr);
+        }
 
+        static public System.IO.StreamReader file_open()
+            {
+                OpenFileDialog ofn = new OpenFileDialog();
+                ofn.Filter = "STL file (*.STL)|*.STL";
+                ofn.Title = "Open STL file";
+
+                    if (ofn.ShowDialog() == DialogResult.Cancel)
+                        return null;
+
+                    System.IO.FileStream strm;
+                    try
+                    {
+                        strm = new System.IO.FileStream(ofn.FileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+                        System.IO.StreamReader rdr = new System.IO.StreamReader(strm);
+                        return rdr;
+                        /*
+                        while (rdr.Peek() >= 0)
+                        {
+                            string str = rdr.ReadLine();
+                            Console.WriteLine(str);
+                        }
+                        */
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Error opening file", "File Error",
+                                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return null;
+                    }    
+        } // end file-open test
+
+
+        
 
 
     } // end GLWindow class
