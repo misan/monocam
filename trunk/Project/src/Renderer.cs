@@ -5,12 +5,13 @@ using Tao.OpenGl;
 using Tao.FreeGlut;
 using monoCAM;
 using Debug;
-namespace RenderTest
+
+namespace monoCAM
 {
     class Renderer : DebugClient
     {
 
-        public void MakeRenderList(ref Geo.glList data)
+        public static void MakeRenderList(ref Geo.glList data)
         {
             if (data.Points == null)
             {
@@ -57,10 +58,11 @@ namespace RenderTest
                 error = Gl.glGetError();
                 if (error > 0)
                 {
-                    ThrowDebugMessage(this, 0, "OpenGL error (" + Glu.gluErrorString(error) + ")");
+                    //ThrowDebugMessage(this, 0, "OpenGL error (" + Glu.gluErrorString(error) + ")");
                     return; // abort.
                 }
-            }
+            }// end while
+            System.Console.WriteLine("Made display-list!");
         }
     }
 }
