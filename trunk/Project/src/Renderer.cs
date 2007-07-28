@@ -45,9 +45,9 @@ namespace monoCAM
                         break;
                     case 1:
                         if (data.type == Geo.glType.GL_POINTS)
-                            Gl.glBegin(Gl.GL_POINT);
+                            Gl.glBegin(Gl.GL_POINTS);
                         else if (data.type == Geo.glType.GL_LINES)
-                            Gl.glBegin(Gl.GL_LINE);
+                            Gl.glBegin(Gl.GL_LINES);
                         else if (data.type == Geo.glType.GL_TRIANGLES)
                             Gl.glBegin(Gl.GL_TRIANGLES);
                         state = 2;
