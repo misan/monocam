@@ -50,6 +50,9 @@ namespace monoCAM
                             Gl.glBegin(Gl.GL_LINES);
                         else if (data.type == Geo.glType.GL_TRIANGLES)
                             Gl.glBegin(Gl.GL_TRIANGLES);
+
+                        Gl.glColor3f(data.color.r, data.color.g, data.color.b);
+
                         state = 2;
                         break;
                     case 2:
