@@ -15,7 +15,7 @@ using System.Text;
 
 namespace monoCAM
 {
-   class GeoCollection
+   public class GeoCollection
    {
        // this container should contain all geometry objects
        // possibly separate collections could be used for:
@@ -147,8 +147,8 @@ namespace monoCAM
            public glColor color;
            public Point[] Points;
            public bool shown;        // false means hidden
-           #pragma warning disable 0649 // The value should be set by the renderlist generator.
-           public int? dlistID;       // the OpenGL display-list ID
+           // #pragma warning disable 0649 // The value should be set by the renderlist generator.
+           public int dlistID;       // the OpenGL display-list ID
 
            // TO-DO:
            // - line types (solid, dashed, etc)
@@ -166,6 +166,7 @@ namespace monoCAM
 
        public Geo()
        {
+           
            // default constructor
        }
 
@@ -246,10 +247,11 @@ namespace monoCAM
            gldata[0].Points[0].x = x;
            gldata[0].Points[0].y = y;
            gldata[0].Points[0].z = z;
-           gldata[0].color.r = 11;
-           gldata[0].color.g = 22;
-           gldata[0].color.b = 33;
+           gldata[0].color.r = 1;
+           gldata[0].color.g = 0;
+           gldata[0].color.b = 0;
            gldata[0].shown = true;
+           gldata[0].dlistID = 0;
        }
        public void SetName(string s)
        {
@@ -295,6 +297,10 @@ namespace monoCAM
            gldata[0].Points[0] = start;
            gldata[0].Points[1] = end;
            gldata[0].shown = true;
+           gldata[0].color.r = 0;
+           gldata[0].color.g = 1;
+           gldata[0].color.b = 0;
+           gldata[0].dlistID = 0;
        }
 
        public override string ToString()
@@ -341,6 +347,7 @@ namespace monoCAM
            gldata[0].color.g = 22;
            gldata[0].color.b = 33;
            gldata[0].shown = true;
+           gldata[0].dlistID = 0;
        }
 
        public void AddTriangle(Tri t)
