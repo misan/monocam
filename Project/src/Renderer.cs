@@ -34,20 +34,13 @@ namespace monoCAM
 
             data.dlistID = dlID;
 
-            /*
-            if (Gl.glIsList(data.dlistID)==1)
-                System.Console.WriteLine("MakeRenderList: created valid displaylist ID={0}", data.dlistID);
-            else
-                System.Console.WriteLine("islist returned false");
-            */
-
             while (state != 4)
             {
                 error = 0;
                 switch (state)
                 {
                     case 0:
-                        Gl.glNewList(1, Gl.GL_COMPILE);
+                        Gl.glNewList(data.dlistID, Gl.GL_COMPILE);
                         state = 1;
                         break;
                     case 1:
