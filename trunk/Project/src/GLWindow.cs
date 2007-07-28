@@ -103,8 +103,11 @@ namespace monoCAM
                 System.Console.Write(l+" ");
                 Gl.glCallList(l);
             }
-            foreach (Geo go in g.obj_list)
-                go.DummyRender();
+
+            // if you really want to see what objects are rendered
+            // uncomment these two lines
+            // foreach (Geo go in g.obj_list)
+            //    go.DummyRender();
 
             System.Console.Write("\n");
 

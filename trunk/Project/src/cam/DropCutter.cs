@@ -49,6 +49,7 @@ namespace monoCAM
 
     class DropCutter
     {
+        
        
        public static double? VertexTest(Cutter c,Geo.Point e, Geo.Point p)
        {
