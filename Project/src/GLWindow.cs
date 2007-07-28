@@ -92,6 +92,10 @@ namespace monoCAM
             // let's draw in wireframe mode
             Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_LINE);
             Gl.glPolygonMode(Gl.GL_BACK, Gl.GL_LINE);
+
+            Gl.glLineWidth(1);
+            Gl.glPointSize(3);
+
             System.Console.Write("rendering lists: ");
             foreach (int l in dlist)
             {
@@ -99,6 +103,9 @@ namespace monoCAM
                 System.Console.Write(l+" ");
                 Gl.glCallList(l);
             }
+            foreach (Geo go in g.obj_list)
+                go.DummyRender();
+
             System.Console.Write("\n");
 
 
@@ -235,9 +242,10 @@ namespace monoCAM
             dlist.Add((int)p.gldata[0].dlistID);
             g.add(p);
 
-            GeoLine l = new GeoLine(new Geo.Point(1, 2, 3), new Geo.Point(3, 4, 5));
-            Renderer.MakeRenderList(ref p.gldata[0]);
-            dlist.Add((int)p.gldata[0].dlistID);
+            GeoLine l = new GeoLine(new Geo.Point(1, 2, 3), new Geo.Point(0, 0, 0));
+            l.gengldata();
+            Renderer.MakeRenderList(ref l.gldata[0]);
+            dlist.Add((int)l.gldata[0].dlistID);
             g.add(l);
 
 
