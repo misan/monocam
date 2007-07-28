@@ -50,6 +50,7 @@
     <Reference Include="Tao.Platform.Windows, Version=1.0.0.4, Culture=neutral, PublicKeyToken=701104b2da67a104, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="cam\DropCutter.cs" />
     <Compile Include="src\Debug.cs" />
     <Compile Include="src\Geo.cs" />
     <Compile Include="src\GLWindow.cs">

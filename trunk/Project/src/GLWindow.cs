@@ -87,6 +87,7 @@ namespace monoCAM
 
             // let's draw in wireframe mode
             Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_LINE);
+            Gl.glPolygonMode(Gl.GL_BACK, Gl.GL_LINE);
 
             foreach (int l in dlist)
             {
