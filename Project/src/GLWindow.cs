@@ -310,11 +310,18 @@ namespace monoCAM
 
             if (s != null)
             {
+                // now that STL loader has added all the triangles we must
+                // manually call gengldata to generate the gldata
+                s.gengldata();
+
                 System.Console.WriteLine("Adding STL surface to geo-collection!");
 
                 Renderer.MakeRenderList(ref s.gldata[0]); // make the display-list
 
                 dlist.Add((int)s.gldata[0].dlistID);           // add it to the list of displayed lists
+
+                // we must also manually call update so that the STL geometry is rendered
+                GLPanel.Refresh();    
             }
         }
 
