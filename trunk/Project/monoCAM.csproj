@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\cam\DropCutter.cs" />
+    <Compile Include="src\Camera.cs" />
     <Compile Include="src\Debug.cs" />
     <Compile Include="src\Geo.cs" />
     <Compile Include="src\GLWindow.cs">

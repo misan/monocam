@@ -32,8 +32,10 @@ namespace monoCAM
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSTLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.geoPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,7 +69,8 @@ namespace monoCAM
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.fileToolStripMenuItem,
+            this.addGeometryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -84,6 +87,13 @@ namespace monoCAM
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(40, 22);
             this.fileToolStripMenuItem.Text = "&File";
             // 
+            // openSTLToolStripMenuItem
+            // 
+            this.openSTLToolStripMenuItem.Name = "openSTLToolStripMenuItem";
+            this.openSTLToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.openSTLToolStripMenuItem.Text = "Open STL";
+            this.openSTLToolStripMenuItem.Click += new System.EventHandler(this.openSTLToolStripMenuItem_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -91,12 +101,20 @@ namespace monoCAM
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // openSTLToolStripMenuItem
+            // addGeometryToolStripMenuItem
             // 
-            this.openSTLToolStripMenuItem.Name = "openSTLToolStripMenuItem";
-            this.openSTLToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.openSTLToolStripMenuItem.Text = "Open STL";
-            this.openSTLToolStripMenuItem.Click += new System.EventHandler(this.openSTLToolStripMenuItem_Click);
+            this.addGeometryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.geoPointToolStripMenuItem});
+            this.addGeometryToolStripMenuItem.Name = "addGeometryToolStripMenuItem";
+            this.addGeometryToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.addGeometryToolStripMenuItem.Text = "Add Geometry";
+            // 
+            // geoPointToolStripMenuItem
+            // 
+            this.geoPointToolStripMenuItem.Name = "geoPointToolStripMenuItem";
+            this.geoPointToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.geoPointToolStripMenuItem.Text = "GeoPoint";
+            this.geoPointToolStripMenuItem.Click += new System.EventHandler(this.geoPointToolStripMenuItem_Click);
             // 
             // GLWindow
             // 
@@ -127,5 +145,7 @@ namespace monoCAM
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openSTLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addGeometryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem geoPointToolStripMenuItem;
     }
 }

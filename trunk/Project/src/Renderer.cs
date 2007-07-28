@@ -11,17 +11,35 @@ namespace monoCAM
     class Renderer : DebugClient
     {
 
+        static int dlID=0;
+
         public static void MakeRenderList(ref Geo.glList data)
         {
             if (data.Points == null)
             {
+                System.Console.WriteLine("MakeRenderList: no gldata present - nothing to do!");
                 return;
             }
             int state = 0;
             int error;
-
-            if (data.dlistID == null)
+            dlID++;
+            // disable for now, doesn't seem to work correctly...
+            // if (data.dlistID == null)
+            /*
+            if (Gl.glIsList(data.dlistID) == 0)
                 data.dlistID = Gl.glGenLists(1);
+            else
+                System.Console.WriteLine("error allocating ID={0}", data.dlistID);
+             */
+
+            data.dlistID = dlID;
+
+            /*
+            if (Gl.glIsList(data.dlistID)==1)
+                System.Console.WriteLine("MakeRenderList: created valid displaylist ID={0}", data.dlistID);
+            else
+                System.Console.WriteLine("islist returned false");
+            */
 
             while (state != 4)
             {
@@ -37,7 +55,6 @@ namespace monoCAM
                             Gl.glBegin(Gl.GL_POINT);
                         else if (data.type == Geo.glType.GL_LINES)
                             Gl.glBegin(Gl.GL_LINE);
-
                         else if (data.type == Geo.glType.GL_TRIANGLES)
                             Gl.glBegin(Gl.GL_TRIANGLES);
                         state = 2;
@@ -59,10 +76,11 @@ namespace monoCAM
                 if (error > 0)
                 {
                     //ThrowDebugMessage(this, 0, "OpenGL error (" + Glu.gluErrorString(error) + ")");
+                    System.Console.WriteLine("MakeRenderList: Error making display-list ID={0}", data.dlistID);
                     return; // abort.
                 }
             }// end while
-            System.Console.WriteLine("Made display-list!");
+            System.Console.WriteLine("MakeRenderList: Made display-list! ID={0}", data.dlistID);
         }
     }
 }
