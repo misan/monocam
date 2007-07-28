@@ -349,7 +349,10 @@ namespace monoCAM
            tris.Add(t);
 
            // need to re-generate gldata when new triangle added:
-           gengldata();
+           // this is required if we want to update the rendered triangles
+           // in real-time as triangles are added
+           
+           //gengldata();  // but disabling it makes large STL files load much faster
        }
 
        public override string ToString()
