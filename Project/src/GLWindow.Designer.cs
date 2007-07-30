@@ -28,7 +28,6 @@ namespace monoCAM
         /// </summary>
         private void InitializeComponent()
         {
-            this.GLPanel = new Tao.Platform.Windows.SimpleOpenGlControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,33 +35,16 @@ namespace monoCAM
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.geoPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addRandomGeoLineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GLPanel = new Tao.Platform.Windows.SimpleOpenGlControl();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // GLPanel
-            // 
-            this.GLPanel.AccumBits = ((byte)(0));
-            this.GLPanel.AutoCheckErrors = false;
-            this.GLPanel.AutoFinish = false;
-            this.GLPanel.AutoMakeCurrent = true;
-            this.GLPanel.AutoSwapBuffers = true;
-            this.GLPanel.BackColor = System.Drawing.Color.Black;
-            this.GLPanel.ColorBits = ((byte)(32));
-            this.GLPanel.DepthBits = ((byte)(16));
-            this.GLPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GLPanel.Location = new System.Drawing.Point(0, 0);
-            this.GLPanel.Name = "GLPanel";
-            this.GLPanel.Size = new System.Drawing.Size(392, 366);
-            this.GLPanel.StencilBits = ((byte)(0));
-            this.GLPanel.TabIndex = 0;
-            this.GLPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.GLPanel_Paint);
-            this.GLPanel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GLPanel_KeyDown);
-            // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 344);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 464);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(392, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(558, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -74,7 +56,7 @@ namespace monoCAM
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.menuStrip1.Size = new System.Drawing.Size(392, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(558, 26);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -104,7 +86,8 @@ namespace monoCAM
             // addGeometryToolStripMenuItem
             // 
             this.addGeometryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.geoPointToolStripMenuItem});
+            this.geoPointToolStripMenuItem,
+            this.addRandomGeoLineToolStripMenuItem});
             this.addGeometryToolStripMenuItem.Name = "addGeometryToolStripMenuItem";
             this.addGeometryToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.addGeometryToolStripMenuItem.Text = "Add Geometry";
@@ -112,18 +95,48 @@ namespace monoCAM
             // geoPointToolStripMenuItem
             // 
             this.geoPointToolStripMenuItem.Name = "geoPointToolStripMenuItem";
-            this.geoPointToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.geoPointToolStripMenuItem.Text = "GeoPoint";
+            this.geoPointToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.geoPointToolStripMenuItem.Text = "Add random GeoPoint";
             this.geoPointToolStripMenuItem.Click += new System.EventHandler(this.geoPointToolStripMenuItem_Click);
+            // 
+            // addRandomGeoLineToolStripMenuItem
+            // 
+            this.addRandomGeoLineToolStripMenuItem.Name = "addRandomGeoLineToolStripMenuItem";
+            this.addRandomGeoLineToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.addRandomGeoLineToolStripMenuItem.Text = "Add random GeoLine";
+            this.addRandomGeoLineToolStripMenuItem.Click += new System.EventHandler(this.addRandomGeoLineToolStripMenuItem_Click);
+            // 
+            // GLPanel
+            // 
+            this.GLPanel.AccumBits = ((byte)(0));
+            this.GLPanel.AutoCheckErrors = false;
+            this.GLPanel.AutoFinish = false;
+            this.GLPanel.AutoMakeCurrent = true;
+            this.GLPanel.AutoSwapBuffers = true;
+            this.GLPanel.BackColor = System.Drawing.Color.Black;
+            this.GLPanel.ColorBits = ((byte)(32));
+            this.GLPanel.DepthBits = ((byte)(16));
+            this.GLPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GLPanel.Location = new System.Drawing.Point(0, 26);
+            this.GLPanel.Name = "GLPanel";
+            this.GLPanel.Size = new System.Drawing.Size(558, 438);
+            this.GLPanel.StencilBits = ((byte)(0));
+            this.GLPanel.TabIndex = 3;
+
+            this.GLPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GLPanel_MouseDown);
+            this.GLPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GLPanel_MouseMove);
+
+            this.GLPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.GLPanel_Paint);
+            this.GLPanel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GLPanel_KeyDown);
             // 
             // GLWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(392, 366);
+            this.ClientSize = new System.Drawing.Size(558, 486);
+            this.Controls.Add(this.GLPanel);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.GLPanel);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "GLWindow";
             this.Text = "GLWindow";
@@ -139,7 +152,6 @@ namespace monoCAM
 
         #endregion
 
-        private Tao.Platform.Windows.SimpleOpenGlControl GLPanel;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -147,5 +159,7 @@ namespace monoCAM
         private System.Windows.Forms.ToolStripMenuItem openSTLToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addGeometryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem geoPointToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addRandomGeoLineToolStripMenuItem;
+        private Tao.Platform.Windows.SimpleOpenGlControl GLPanel;
     }
 }
