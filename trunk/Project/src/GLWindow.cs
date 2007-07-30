@@ -16,6 +16,9 @@ namespace monoCAM
         public Camera cam;
         public List<int> dlist;
         public GeoCollection g;
+        Random random; // used for random point generation (TESTING ONLY)
+        public int mdownx, mdowny; // mouse down coordinates
+        public int mupx, mupy; // mouse up coordinates
 
         public GLWindow()
         {
@@ -23,6 +26,8 @@ namespace monoCAM
             cam = new Camera();
             dlist = new List<int>();
             g = new GeoCollection();
+            random = new Random();
+
 
             GLPanel.InitializeContexts();
             Gl.glShadeModel(Gl.GL_SMOOTH);
@@ -235,28 +240,46 @@ namespace monoCAM
 
 
         private void geoPointToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            // testing adding a point and a line
-            // NOT WORKING...
-
-            System.Console.WriteLine("adding GeoPoint!");
-            GeoPoint p = new GeoPoint(1, 2, 3);
+        {           
+            System.Console.Write("adding GeoPoint!: ");
+            GeoPoint p = new GeoPoint((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
+            System.Console.WriteLine(p);
             Renderer.MakeRenderList(ref p.gldata[0]);
             dlist.Add((int)p.gldata[0].dlistID);
             g.add(p);
 
-            GeoLine l = new GeoLine(new Geo.Point(1, 2, 3), new Geo.Point(0, 0, 0));
+            GLPanel.Refresh();
+        }
+
+        private int RandomNumber(int min, int max)
+        {
+            return random.Next(min, max);
+        }
+
+        private void addRandomGeoLineToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Geo.Point p1 = new Geo.Point((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
+            Geo.Point p2 = new Geo.Point((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
+            GeoLine l = new GeoLine(p1, p2);
             l.gengldata();
             Renderer.MakeRenderList(ref l.gldata[0]);
             dlist.Add((int)l.gldata[0].dlistID);
             g.add(l);
-
-
-
             GLPanel.Refresh();
-        } 
+        }
 
-        
+        private void GLPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            System.Console.WriteLine("mousedown at" + e.Location+"button="+e.Button+"delta="+e.Delta);
+        }
+
+        private void GLPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            // System.Console.WriteLine("mousemove");
+
+            if (e.Button != MouseButtons.None)
+                System.Console.WriteLine("button=" + e.Button + "delta" + e.Delta + "clicks"+e.Clicks);
+        }
 
 
     } // end GLWindow class
