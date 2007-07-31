@@ -281,6 +281,14 @@ namespace monoCAM
                 System.Console.WriteLine("button=" + e.Button + "delta" + e.Delta + "clicks"+e.Clicks);
         }
 
+        private void GLPanel_MouseWheel(object sender, MouseEventArgs e)
+        {
+           double zoomratio = 0.01;
+           cam.zoom((double)e.Delta * zoomratio);
+           GLWindow_Resize(this, null);
+           GLPanel.Refresh();
+        }
+
 
     } // end GLWindow class
 }
