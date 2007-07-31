@@ -39,11 +39,13 @@ namespace monoCAM
             this.projectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.perspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orthographicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testCAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GLPanel = new Tao.Platform.Windows.SimpleOpenGlControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.cAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testCAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.isinsideTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -67,7 +69,8 @@ namespace monoCAM
             this.fileToolStripMenuItem,
             this.addGeometryToolStripMenuItem,
             this.projectionToolStripMenuItem,
-            this.cAMToolStripMenuItem});
+            this.cAMToolStripMenuItem,
+            this.testsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -146,6 +149,21 @@ namespace monoCAM
             this.orthographicToolStripMenuItem.Text = "Orthographic";
             this.orthographicToolStripMenuItem.Click += new System.EventHandler(this.orthographicToolStripMenuItem_Click);
             // 
+            // cAMToolStripMenuItem
+            // 
+            this.cAMToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.testCAMToolStripMenuItem});
+            this.cAMToolStripMenuItem.Name = "cAMToolStripMenuItem";
+            this.cAMToolStripMenuItem.Size = new System.Drawing.Size(50, 22);
+            this.cAMToolStripMenuItem.Text = "CAM";
+            // 
+            // testCAMToolStripMenuItem
+            // 
+            this.testCAMToolStripMenuItem.Name = "testCAMToolStripMenuItem";
+            this.testCAMToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.testCAMToolStripMenuItem.Text = "Test-CAM";
+            this.testCAMToolStripMenuItem.Click += new System.EventHandler(this.testCAMToolStripMenuItem_Click);
+            // 
             // GLPanel
             // 
             this.GLPanel.AccumBits = ((byte)(0));
@@ -201,20 +219,20 @@ namespace monoCAM
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
             // 
-            // cAMToolStripMenuItem
+            // testsToolStripMenuItem
             // 
-            this.cAMToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.testCAMToolStripMenuItem});
-            this.cAMToolStripMenuItem.Name = "cAMToolStripMenuItem";
-            this.cAMToolStripMenuItem.Size = new System.Drawing.Size(50, 22);
-            this.cAMToolStripMenuItem.Text = "CAM";
+            this.testsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.isinsideTestToolStripMenuItem});
+            this.testsToolStripMenuItem.Name = "testsToolStripMenuItem";
+            this.testsToolStripMenuItem.Size = new System.Drawing.Size(57, 22);
+            this.testsToolStripMenuItem.Text = "Tests";
             // 
-            // testCAMToolStripMenuItem
+            // isinsideTestToolStripMenuItem
             // 
-            this.testCAMToolStripMenuItem.Name = "testCAMToolStripMenuItem";
-            this.testCAMToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.testCAMToolStripMenuItem.Text = "Test-CAM";
-            this.testCAMToolStripMenuItem.Click += new System.EventHandler(this.testCAMToolStripMenuItem_Click);
+            this.isinsideTestToolStripMenuItem.Name = "isinsideTestToolStripMenuItem";
+            this.isinsideTestToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.isinsideTestToolStripMenuItem.Text = "Isinside Test";
+            this.isinsideTestToolStripMenuItem.Click += new System.EventHandler(this.isinsideTestToolStripMenuItem_Click);
             // 
             // GLWindow
             // 
@@ -259,5 +277,7 @@ namespace monoCAM
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
         private System.Windows.Forms.ToolStripMenuItem cAMToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testCAMToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem isinsideTestToolStripMenuItem;
     }
 }

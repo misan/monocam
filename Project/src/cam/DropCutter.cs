@@ -29,6 +29,7 @@ namespace monoCAM
             {
                 // ERROR!
                 // Throw an exception or something
+                R = 1;
             }
 
             if ((rset > 0) && (rset <= R))
@@ -39,6 +40,7 @@ namespace monoCAM
             {
                 // ERROR!
                 // Throw an exception or something
+                r = 0;
             }
         }
 
@@ -113,7 +115,7 @@ namespace monoCAM
             // in debug phase, see if this is a useful case!
             if ((a == 0) && (b == 0))
             {
-                System.Console.WriteLine("facet-test:z-dir normal case!");
+                // System.Console.WriteLine("facet-test:z-dir normal case!");
                 e.z = t.p[0].z;
                 cc = new Geo.Point(e.x,e.y,e.z);
                 if (isinside(t,cc))
@@ -122,7 +124,7 @@ namespace monoCAM
                     return null;
             }
 
-
+            // System.Console.WriteLine("facet-test:general case!");
             // facet test general case
             // uses trigonometry, so might be too slow?
 
@@ -171,11 +173,11 @@ namespace monoCAM
             bool b2 = isright(p3, p1, pt);
             bool b3 = isright(p2, p3, pt);
 
-            if (b1 && b2 && b3)
+            if ((b1) && (b2) && (b3))
             {
                 return true;
             }
-            else if (!b1 && !b2 && !b3)
+            else if ((!b1) && (!b2) && (!b3))
             {
                 return true;
             }
@@ -193,7 +195,7 @@ namespace monoCAM
             // this is an ugly way of doing a determinant
             // should be prettyfied sometime...
             double a1 = p2.x - p1.x;
-            double a2 = p2.y - p2.y;
+            double a2 = p2.y - p1.y;
             double t1 = a2;
             double t2 = -a1;
             double b1 = p.x - p1.x;

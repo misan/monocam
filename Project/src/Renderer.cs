@@ -51,7 +51,7 @@ namespace monoCAM
                         else if (data.type == Geo.glType.GL_TRIANGLES)
                             Gl.glBegin(Gl.GL_TRIANGLES);
 
-                        Gl.glColor3f(data.color.r, data.color.g, data.color.b);
+                        Gl.glColor3f((float)data.color.r, (float)data.color.g, (float)data.color.b);
 
                         state = 2;
                         break;
@@ -76,7 +76,7 @@ namespace monoCAM
                     return; // abort.
                 }
             }// end while
-            System.Console.WriteLine("MakeRenderList: Made display-list! ID={0}", data.dlistID);
+            // System.Console.WriteLine("MakeRenderList: Made display-list! ID={0}", data.dlistID);
         }
     }
 }
