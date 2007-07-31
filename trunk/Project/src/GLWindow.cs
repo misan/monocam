@@ -44,7 +44,7 @@ namespace monoCAM
         {
             float aspect = (float)GLPanel.Width / (float)GLPanel.Height; // THIS WILL FAIL WHEN Height == 0 !!
 
-            System.Console.WriteLine("resize: {0} x {1}, aspect= {2},cam.x={3}", GLPanel.Width, GLPanel.Height, aspect, cam.eye.x);
+            // System.Console.WriteLine("resize: {0} x {1}, aspect= {2},cam.x={3}", GLPanel.Width, GLPanel.Height, aspect, cam.eye.x);
 
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
@@ -80,7 +80,7 @@ namespace monoCAM
         private void GLPanel_Paint(object sender, PaintEventArgs e)
         {
 
-            System.Console.Write("Paint! " + g);
+            //System.Console.Write("Paint! " + g);
             // this is where all drawing happens.
 
             /*
@@ -101,11 +101,11 @@ namespace monoCAM
             Gl.glLineWidth(1);
             Gl.glPointSize(3);
 
-            System.Console.Write("rendering lists: ");
+            //System.Console.Write("rendering lists: ");
             foreach (int l in dlist)
             {
 
-                System.Console.Write(l+" ");
+                //System.Console.Write(l+" ");
                 Gl.glCallList(l);
             }
 
@@ -270,15 +270,31 @@ namespace monoCAM
 
         private void GLPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            System.Console.WriteLine("mousedown at" + e.Location+"button="+e.Button+"delta="+e.Delta);
+            // System.Console.WriteLine("mousedown at" + e.Location+"button="+e.Button+"delta="+e.Delta);
+            mdownx = e.X;
+            mdowny = e.Y;
         }
 
         private void GLPanel_MouseMove(object sender, MouseEventArgs e)
         {
             // System.Console.WriteLine("mousemove");
-
+            double theta_scale = 0.0003;
+            double fi_scale = 0.0003;
             if (e.Button != MouseButtons.None)
-                System.Console.WriteLine("button=" + e.Button + "delta" + e.Delta + "clicks"+e.Clicks);
+            {
+                // System.Console.WriteLine("button=" + e.Button + "delta" + e.Delta + "clicks" + e.Clicks);
+                // System.Console.WriteLine("drag x:" + (e.X - mdownx) + " drag y:" + (e.Y - mdowny));
+                switch (e.Button)
+                {
+                    case (MouseButtons.Right):
+                        cam.rotate_theta((double)(e.X - mdownx)*theta_scale);
+                        cam.rotate_fi((double)(e.Y - mdowny) * fi_scale);
+                        GLWindow_Resize(this, null);
+                        GLPanel.Refresh();
+                        break;
+
+                }
+            }
         }
 
         private void GLPanel_MouseWheel(object sender, MouseEventArgs e)
