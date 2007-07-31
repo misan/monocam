@@ -251,19 +251,33 @@ namespace monoCAM
            SetPos(x, y, z);
            SetName(null);
            layer = 0;
+           gengldata();
 
+       }
+
+       public GeoPoint(Point p_in)
+       {
+           p = p_in;
+           SetName(null);
+           layer = 0;
+           gengldata();
+       }
+
+       public override void gengldata()
+       {
            gldata = new glList[1]; // we only need one glList for drawing a point
            gldata[0].type = glType.GL_POINTS;
            gldata[0].Points = new Point[1]; // we only need one point
-           gldata[0].Points[0].x = x;
-           gldata[0].Points[0].y = y;
-           gldata[0].Points[0].z = z;
+           gldata[0].Points[0].x = p.x;
+           gldata[0].Points[0].y = p.y;
+           gldata[0].Points[0].z = p.z;
            gldata[0].color.r = 1;
            gldata[0].color.g = 0;
            gldata[0].color.b = 0;
            gldata[0].shown = true;
            gldata[0].dlistID = 0;
        }
+
        public void SetName(string s)
        {
            if (s != null)
