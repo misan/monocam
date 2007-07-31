@@ -108,15 +108,22 @@ namespace monoCAM
            }
 
            public Tri(Vector N) {
-
+               // a strange constructor indeed...
                p = new Point[3];
                p[0] = new Point();
                p[1] = new Point();
                p[2] = new Point();
                n = N;
-
            }
 
+           public void recalc_normals()
+           {
+                // normal data from STL files is usually junk, so recalculate:
+               Vector v1 = new Vector(p[0].x - p[1].x, p[0].y - p[1].y, p[0].z - p[1].z);
+               Vector v2 = new Vector(p[0].x - p[2].x, p[0].y - p[2].y, p[0].z- p[2].z);
+               n = v1.Cross(v2); // the normal is in the direction of the cross product between the edge vectors
+               n = (1 / n.Length()) * n; // normalize to length==1
+           }
 
 
 
@@ -161,7 +168,7 @@ namespace monoCAM
 
        public glList[] gldata;   // all data that the renderer needs is here
        public int layer;         // the layer of the object
-
+       public System.Drawing.Color color;
        public string name;       // the name of the object
 
        public Geo()
@@ -174,13 +181,7 @@ namespace monoCAM
        {
            // do nothing
        }
-       /*
-       public void gengldata()
-       {
-           // do nothing.;
-           int i;
-       }
-       */
+    
        public void DummyRender()
        {
            // this is a dummy method that simulates how the renderer
@@ -257,11 +258,13 @@ namespace monoCAM
 
        public GeoPoint(Point p_in)
        {
-           p = p_in;
+           p = new Point(p_in.x,p_in.y,p_in.z);
            SetName(null);
            layer = 0;
            gengldata();
        }
+
+       
 
        public override void gengldata()
        {
@@ -271,9 +274,9 @@ namespace monoCAM
            gldata[0].Points[0].x = p.x;
            gldata[0].Points[0].y = p.y;
            gldata[0].Points[0].z = p.z;
-           gldata[0].color.r = 1;
-           gldata[0].color.g = 0;
-           gldata[0].color.b = 0;
+           gldata[0].color.r = color.R;
+           gldata[0].color.g = color.G;
+           gldata[0].color.b = color.B;
            gldata[0].shown = true;
            gldata[0].dlistID = 0;
        }
@@ -322,9 +325,9 @@ namespace monoCAM
            gldata[0].Points[0] = start;
            gldata[0].Points[1] = end;
            gldata[0].shown = true;
-           gldata[0].color.r = 0;
-           gldata[0].color.g = 1;
-           gldata[0].color.b = 0;
+           gldata[0].color.r = color.R;
+           gldata[0].color.g = color.G;
+           gldata[0].color.b = color.B;
            gldata[0].dlistID = 0;
        }
 

@@ -369,6 +369,11 @@ namespace monoCAM
             camtest.run(this);
         }
 
+        private void isinsideTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            camtest.isinside_test(this);
+        }
+
 
     } // end GLWindow class
 
