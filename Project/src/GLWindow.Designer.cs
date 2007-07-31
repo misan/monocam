@@ -122,12 +122,14 @@ namespace monoCAM
             this.GLPanel.Size = new System.Drawing.Size(558, 438);
             this.GLPanel.StencilBits = ((byte)(0));
             this.GLPanel.TabIndex = 3;
-
             this.GLPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GLPanel_MouseDown);
             this.GLPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.GLPanel_MouseMove);
-
             this.GLPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.GLPanel_Paint);
             this.GLPanel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GLPanel_KeyDown);
+
+            // manually inserted code for mousewheel:
+            this.GLPanel.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.GLPanel_MouseWheel);
+            
             // 
             // GLWindow
             // 
