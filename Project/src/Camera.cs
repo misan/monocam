@@ -48,7 +48,7 @@ namespace monoCAM
             Vector n = new Vector(Math.Sin(_theta), -Math.Cos(_theta), 0);
             up = n.Cross(eye - cen);
             up.normalize();
-            System.Console.WriteLine("Camera: cen=" + cen + " eye=" + eye);
+            // System.Console.WriteLine("Camera: cen=" + cen + " eye=" + eye);
         }
 
 
