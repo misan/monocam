@@ -15,18 +15,20 @@ namespace monoCAM
     {
         public Camera cam;
         public List<int> dlist;
-        public GeoCollection g;
+        public GeoCollection geom;
         Random random; // used for random point generation (TESTING ONLY)
         public int mdownx, mdowny; // mouse down coordinates
         public int mupx, mupy; // mouse up coordinates
+        public bool projection; // true=perspective, false=orthographic
 
         public GLWindow()
         {
             InitializeComponent();
             cam = new Camera();
             dlist = new List<int>();
-            g = new GeoCollection();
+            geom = new GeoCollection();
             random = new Random();
+            projection = true; // FIXME: this belongs to the camera class
 
 
             GLPanel.InitializeContexts();
@@ -36,7 +38,7 @@ namespace monoCAM
             Gl.glEnable(Gl.GL_DEPTH_TEST);
             Gl.glDepthFunc(Gl.GL_LEQUAL);
             Gl.glHint(Gl.GL_PERSPECTIVE_CORRECTION_HINT, Gl.GL_NICEST);
-            GLWindow_Resize(this, new EventArgs());
+            GLWindow_Resize(this, null);
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
         }
 
@@ -49,12 +51,27 @@ namespace monoCAM
             Gl.glMatrixMode(Gl.GL_PROJECTION);
             Gl.glLoadIdentity();
             Gl.glViewport(0, 0, GLPanel.Width, GLPanel.Height);
-            /* gluPerspective( GLdouble	fovy,   field of view in degrees (y-direction)
+
+            if (projection)
+            {
+                /* gluPerspective( GLdouble	fovy,   field of view in degrees (y-direction)
 			       GLdouble	aspect,             aspect ratio: (width/height)
 			       GLdouble	zNear,              distance from viewer to near clipping plane
 			       GLdouble	zFar )              distance from viewer to far clipping plane
-            */
-            Glu.gluPerspective(45d, aspect, 0.1d, 100.0d);
+                    */
+                Glu.gluPerspective(45d, aspect, 0.0, 100.0d);
+            }
+            else
+            {
+                /*
+                 * void glOrtho(GLdouble left, GLdouble right, GLdouble bottom
+                            , GLdouble top , GLdouble zNear, GLdouble zFar);
+                 */
+                // This still needs a lot of work.
+                // both zooming and panning are different when using glOrtho!
+                Gl.glOrtho(-10,10,-10,10,0,100);
+            }
+
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
             Gl.glLoadIdentity();
             
@@ -114,7 +131,7 @@ namespace monoCAM
             // foreach (Geo go in g.obj_list)
             //    go.DummyRender();
 
-            System.Console.Write("\n");
+            //System.Console.Write("\n");
 
 
             // draw some coordinate axes
@@ -176,18 +193,7 @@ namespace monoCAM
                 s = STL.Load(rdr);
 
             if (s != null)
-            {
-                // now that STL loader has added all the triangles we must
-                // manually call gengldata to generate the gldata
-                s.gengldata();
-                System.Console.WriteLine("Adding STL surface to geo-collection!");
-                Renderer.MakeRenderList(ref s.gldata[0]);      // make the display-list
-                dlist.Add((int)s.gldata[0].dlistID);           // add it to the list of displayed lists
-                g.add(s);
-
-                // we must also manually call update so that the STL geometry is rendered
-                GLPanel.Refresh();
-            }
+                addGeom(s);
             else
                 System.Console.WriteLine("loading STL file failed. no geometry created.");
         }
@@ -221,17 +227,30 @@ namespace monoCAM
 
         private void geoPointToolStripMenuItem_Click(object sender, EventArgs e)
         {           
-            System.Console.Write("adding GeoPoint!: ");
+            //System.Console.Write("adding GeoPoint!: ");
             GeoPoint p = new GeoPoint((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
             System.Console.WriteLine(p);
-            Renderer.MakeRenderList(ref p.gldata[0]);
-            dlist.Add((int)p.gldata[0].dlistID);
-            g.add(p);
-
-            GLPanel.Refresh();
+            addGeom(p);
         }
 
-        private int RandomNumber(int min, int max)
+        public void addGeom(Geo g)
+        {
+            g.gengldata(); // generate gl-data.
+            int N = g.gldata.Length;
+            for (int n=0; n < N;n++ )
+            {
+                // make renderlist(s)
+                Renderer.MakeRenderList(ref g.gldata[n]);
+                // add list to display-lists being rendered
+                dlist.Add((int)g.gldata[n].dlistID);
+            }
+            // add object to geo
+            geom.add(g);
+            GLPanel.Refresh();
+
+        }
+
+        public int RandomNumber(int min, int max)
         {
             return random.Next(min, max);
         }
@@ -241,11 +260,12 @@ namespace monoCAM
             Geo.Point p1 = new Geo.Point((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
             Geo.Point p2 = new Geo.Point((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
             GeoLine l = new GeoLine(p1, p2);
-            l.gengldata();
-            Renderer.MakeRenderList(ref l.gldata[0]);
-            dlist.Add((int)l.gldata[0].dlistID);
-            g.add(l);
-            GLPanel.Refresh();
+            addGeom(l);
+            // l.gengldata();
+            // Renderer.MakeRenderList(ref l.gldata[0]);
+            // dlist.Add((int)l.gldata[0].dlistID);
+            // geom.add(l);
+            // GLPanel.Refresh();
         }
 
         private void GLPanel_MouseDown(object sender, MouseEventArgs e)
@@ -326,6 +346,30 @@ namespace monoCAM
            GLPanel.Refresh();
         }
 
+        private void perspectiveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Console.WriteLine("To perspective projection");
+            projection = true;
+            GLWindow_Resize(this, null);
+            GLPanel.Refresh();
+            //menuStrip1.Items[2].c
+        }
+
+        private void orthographicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Console.WriteLine("To orthographic projection");
+            projection = false;
+            GLWindow_Resize(this, null);
+            GLPanel.Refresh();
+
+        }
+
+        private void testCAMToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            camtest.run(this);
+        }
+
 
     } // end GLWindow class
+
 }
