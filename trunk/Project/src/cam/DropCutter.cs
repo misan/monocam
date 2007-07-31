@@ -113,6 +113,7 @@ namespace monoCAM
             // in debug phase, see if this is a useful case!
             if ((a == 0) && (b == 0))
             {
+                System.Console.WriteLine("facet-test:z-dir normal case!");
                 e.z = t.p[0].z;
                 cc = new Geo.Point(e.x,e.y,e.z);
                 if (isinside(t,cc))
