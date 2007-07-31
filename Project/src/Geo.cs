@@ -170,6 +170,17 @@ namespace monoCAM
            // default constructor
        }
 
+       public virtual void gengldata()
+       {
+           // do nothing
+       }
+       /*
+       public void gengldata()
+       {
+           // do nothing.;
+           int i;
+       }
+       */
        public void DummyRender()
        {
            // this is a dummy method that simulates how the renderer
@@ -289,7 +300,7 @@ namespace monoCAM
            end = e;
            gengldata();
        }
-       public void gengldata()
+       public override void  gengldata()
        {
            gldata = new glList[1]; // we need only one display-list for representing a Line
            gldata[0].type = glType.GL_LINES;
@@ -315,10 +326,10 @@ namespace monoCAM
 
    }
 
-   class STLSurf : Geo
+   public class STLSurf : Geo
    {
        // experimental STL surface class
-       private List<Tri> tris;  // a list that holds the vertices.
+       public List<Tri> tris;  // a list that holds the vertices.
        // the length of the list should always be a multiple of three!
 
 
@@ -328,7 +339,7 @@ namespace monoCAM
            gengldata();
        }
 
-       public void gengldata()
+       public override void  gengldata()
        {
            gldata = new glList[1]; // we need only one display-list for representing an STLSurf
            gldata[0].type = glType.GL_TRIANGLES;
