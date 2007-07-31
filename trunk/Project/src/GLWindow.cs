@@ -278,8 +278,11 @@ namespace monoCAM
         private void GLPanel_MouseMove(object sender, MouseEventArgs e)
         {
             // System.Console.WriteLine("mousemove");
-            double theta_scale = 0.0003;
-            double fi_scale = 0.0003;
+            double theta_scale = 0.01;
+            double fi_scale = 0.01;
+            double x_limit = 0.03;
+            double y_limit = 0.03;
+            
             if (e.Button != MouseButtons.None)
             {
                 // System.Console.WriteLine("button=" + e.Button + "delta" + e.Delta + "clicks" + e.Clicks);
@@ -287,12 +290,29 @@ namespace monoCAM
                 switch (e.Button)
                 {
                     case (MouseButtons.Right):
-                        cam.rotate_theta((double)(e.X - mdownx)*theta_scale);
-                        cam.rotate_fi((double)(e.Y - mdowny) * fi_scale);
+                        double dragx = (double)(e.X - mdownx) * theta_scale;
+                        double dragy = (double)(e.Y - mdowny) * fi_scale;
+                        if (Math.Abs(dragx) > x_limit)
+                        {
+                            cam.rotate_theta(dragx);
+                            GLWindow_Resize(this, null);
+                            GLPanel.Refresh();
+                            mdownx = e.X;
+                            break;
+                        }
+                        if (Math.Abs(dragy) > y_limit)
+                        {
+                            cam.rotate_fi(dragy);
+                            GLWindow_Resize(this, null);
+                            GLPanel.Refresh();
+                            GLWindow_Resize(this, null);
+                            GLPanel.Refresh();
+                            mdowny = e.Y;
+                            break;
+                        }
                         GLWindow_Resize(this, null);
                         GLPanel.Refresh();
                         break;
-
                 }
             }
         }
