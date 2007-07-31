@@ -145,19 +145,8 @@ namespace monoCAM
         private void GLPanel_KeyDown(object sender, KeyEventArgs e)
         {
             System.Console.WriteLine("you pressed: " + e.KeyCode);
-            if (e.KeyCode == Keys.Oemplus)       // + for zoom in
-                cam.zoom(-0.2);
-            else if (e.KeyCode == Keys.OemMinus) // - for zoom out
-                cam.zoom(+0.2);
-            else if (e.KeyCode == Keys.D)  // D for down
-                cam.rotate_fi(+0.1);
-            else if (e.KeyCode == Keys.U)  // U for up
-                cam.rotate_fi(-0.1);
-            else if (e.KeyCode == Keys.L)  // L for left
-                cam.rotate_theta(-0.1);
-            else if (e.KeyCode == Keys.R)  // R for right
-                cam.rotate_theta(+0.1);
-            else if (e.KeyCode == Keys.X)  // X for +X-view
+
+            if (e.KeyCode == Keys.X)  // X for +X-view
                 cam.x_view(true);
             else if ((e.Shift == true) && (e.KeyCode == Keys.X))  // shift-X for -X-view
             {
@@ -168,16 +157,7 @@ namespace monoCAM
                 cam.y_view(true);
             else if (e.KeyCode == Keys.Z)  // Z for +Z-view
                 cam.z_view(true);
-            else if (e.KeyCode == Keys.A) // pan left
-                cam.pan_lr(-0.03);
-            else if (e.KeyCode == Keys.S) // pan right
-                cam.pan_lr(+0.03);
-            else if (e.KeyCode == Keys.Q) // pan up
-                cam.pan_ud(+0.03);
-            else if (e.KeyCode == Keys.W) // pan down
-                cam.pan_ud(-0.03);
-
-
+      
             GLWindow_Resize(this, null);
             //GLPanel_Paint(this, null);
             GLPanel.Refresh(); // this calls paint indirectly.
@@ -278,10 +258,15 @@ namespace monoCAM
         private void GLPanel_MouseMove(object sender, MouseEventArgs e)
         {
             // System.Console.WriteLine("mousemove");
-            double theta_scale = 0.01;
+            double dragx, dragy;
+            double theta_scale = 0.01;  // multiply drag amount (in pixels) by this to get angle
             double fi_scale = 0.01;
-            double x_limit = 0.03;
+            double pan_scale = 0.01;
+
+            double x_limit = 0.03;  // require this amount of angle change before updating view
             double y_limit = 0.03;
+            double x_pan_limit = 0.1;
+            double y_pan_limit = 0.1;
             
             if (e.Button != MouseButtons.None)
             {
@@ -290,8 +275,8 @@ namespace monoCAM
                 switch (e.Button)
                 {
                     case (MouseButtons.Right):
-                        double dragx = (double)(e.X - mdownx) * theta_scale;
-                        double dragy = (double)(e.Y - mdowny) * fi_scale;
+                        dragx = (double)(e.X - mdownx) * theta_scale;
+                        dragy = (double)(e.Y - mdowny) * fi_scale;
                         if (Math.Abs(dragx) > x_limit)
                         {
                             cam.rotate_theta(dragx);
@@ -305,13 +290,29 @@ namespace monoCAM
                             cam.rotate_fi(dragy);
                             GLWindow_Resize(this, null);
                             GLPanel.Refresh();
+                            mdowny = e.Y;
+                            break;
+                        }
+                        break;
+                    case (MouseButtons.Middle):
+                        dragx = (double)(e.X - mdownx) * pan_scale;
+                        dragy = (double)(e.Y - mdowny) * pan_scale;
+                        if (Math.Abs(dragx) > x_pan_limit)
+                        {
+                            cam.pan_lr(-dragx);
+                            GLWindow_Resize(this, null);
+                            GLPanel.Refresh();
+                            mdownx = e.X;
+                            break;
+                        }
+                        if (Math.Abs(dragy) > y_pan_limit)
+                        {
+                            cam.pan_ud(dragy);
                             GLWindow_Resize(this, null);
                             GLPanel.Refresh();
                             mdowny = e.Y;
                             break;
                         }
-                        GLWindow_Resize(this, null);
-                        GLPanel.Refresh();
                         break;
                 }
             }
