@@ -159,57 +159,6 @@ namespace monoCAM
 
         } // end FacetTest
 
-        public static bool isinside(Geo.Tri t, Geo.Point p)
-        {
-            // point in triangle test
-
-            // a new Tri projected onto the xy plane:
-            Geo.Point p1 = new Geo.Point(t.p[0].x, t.p[0].y, 0);
-            Geo.Point p2 = new Geo.Point(t.p[1].x, t.p[1].y, 0);
-            Geo.Point p3 = new Geo.Point(t.p[2].x, t.p[2].y, 0);
-            Geo.Point pt = new Geo.Point(p.x, p.y, 0);
-
-            bool b1 = isright(p1, p2, pt);
-            bool b2 = isright(p3, p1, pt);
-            bool b3 = isright(p2, p3, pt);
-
-            if ((b1) && (b2) && (b3))
-            {
-                return true;
-            }
-            else if ((!b1) && (!b2) && (!b3))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        } // end isinside()
-
-        public static bool isright(Geo.Point p1, Geo.Point p2, Geo.Point p)
-        {
-            // is point p right of line through points p1 and p2 ?
-
-            // this is an ugly way of doing a determinant
-            // should be prettyfied sometime...
-            double a1 = p2.x - p1.x;
-            double a2 = p2.y - p1.y;
-            double t1 = a2;
-            double t2 = -a1;
-            double b1 = p.x - p1.x;
-            double b2 = p.y - p1.y;
-
-            double t = t1 * b1 + t2 * b2;
-            if (t>0)
-                return true;
-            else
-                return false;
-        } // end isright()
-
-
-
         public static double? EdgeTest(Cutter cu, Geo.Point e, Geo.Point p1, Geo.Point p2)
         { 
             // contact cutter against edge from p1 to p2
@@ -227,26 +176,45 @@ namespace monoCAM
             else
                 alfa = Math.PI / 2;
 
+            //alfa = -alfa;
             // rotation matrix for rotation around z-axis:
             // should probably implement a matrix class later
 
             // rotate by angle alfa
-            start.x = start.x * Math.Cos(alfa) + start.y * Math.Sin(alfa);
-            start.y = -start.x * Math.Sin(alfa) + start.y * Math.Cos(alfa);
-            end.x = end.x * Math.Cos(alfa) + end.y * Math.Sin(alfa);
-            end.y = -end.x * Math.Sin(alfa) + end.y * Math.Cos(alfa);
+            // need copy of data that does not change as we go through each line:
+            double sx = start.x, sy = start.y, ex = end.x, ey = end.y;
+            start.x = sx * Math.Cos(alfa) + sy * Math.Sin(alfa);
+            start.y = -sx * Math.Sin(alfa) + sy * Math.Cos(alfa);
+            end.x = ex * Math.Cos(alfa) + ey * Math.Sin(alfa);
+            end.y = -ex * Math.Sin(alfa) + ey * Math.Cos(alfa);
+
 
             // check if segment is below cutter
+            
             if (start.y > 0)
-            {   // if it's above cutter then rotate some more
-                alfa = alfa + Math.PI;
-                start.x = start.x * Math.Cos(alfa) + start.y * Math.Sin(alfa);
-                start.y = -start.x * Math.Sin(alfa) + start.y * Math.Cos(alfa);
-                end.x = end.x * Math.Cos(alfa) + end.y * Math.Sin(alfa);
-                end.y = -end.x * Math.Sin(alfa) + end.y * Math.Cos(alfa);
+            {   
+                alfa = alfa+Math.PI;
+                start.x = sx * Math.Cos(alfa) + sy * Math.Sin(alfa);
+                start.y = -sx * Math.Sin(alfa) + sy * Math.Cos(alfa);
+                end.x = ex * Math.Cos(alfa) + ey * Math.Sin(alfa);
+                end.y = -ex * Math.Sin(alfa) + ey * Math.Cos(alfa);
+            }
+
+            if (Math.Abs(start.y-end.y)>0.0000001)
+            {
+                System.Console.WriteLine("EdgeTest ERROR! (start.y - end.y) = " +(start.y-end.y));
+                return null;
             }
 
             double l = -start.y; // distance from cutter to edge
+            if (l < 0)
+                System.Console.WriteLine("EdgeTest ERROR! l<0 !");
+
+ 
+                
+            
+            // System.Console.WriteLine("l=" + l+" start.y="+start.y+" end.y="+end.y);
+            
 
             // now we have two different algorithms depending on the cutter:
             if (cu.r == 0)
@@ -286,9 +254,10 @@ namespace monoCAM
                 }
                 // unreachable place (according to compiler)
             } // end of flat endmill (r=0) case
-
             else if (cu.r > 0)
-            { 
+            {
+                // System.Console.WriteLine("edgetest r>0 case!");
+
                 // this is the general case (r>0)   ball-nose or bull-nose (spherical or toroidal)
                 // later a separate case for the ball-cutter might be added (for performance)
 
@@ -331,12 +300,10 @@ namespace monoCAM
 
                     // now we have a CC point
                     // so we need to check if the CC point is in the edge
-                    if ((start.x > xc) && (xc < end.x))
-                        return null;
-                    else if ((end.x < xc) && (xc > start.x))
-                        return null;
-                    else
+                    if (isinrange(start.x, end.x, xc))
                         return ze;
+                    else
+                        return null;
 
                 } // end horizontal edge special case
 
@@ -389,12 +356,12 @@ namespace monoCAM
                 ze = zc + Math.Abs(h * Math.Sin(theta)) - cu.r;
 
                 // finally, check that the CC point is in the edge
-                if ((start.x > xc) && (xc < end.x))
-                    return null;
-                else if ((end.x < xc) && (xc > start.x))
-                    return null;
-                else
+                if (isinrange(start.x,end.x,xc))
                     return ze;
+                else
+                    return null;
+
+     
 
 
                 // this line is unreachable (according to compiler)
@@ -408,7 +375,63 @@ namespace monoCAM
 
         } // end of EdgeTest method
 
+        public static bool isinrange(double start, double end, double x)
+        {
+            if ((start > x) && (x < end))
+                return false;
+            else if ((end < x) && (x > start))
+                return false;
+            else
+                return true;
+        }
+        public static bool isinside(Geo.Tri t, Geo.Point p)
+        {
+            // point in triangle test
 
+            // a new Tri projected onto the xy plane:
+            Geo.Point p1 = new Geo.Point(t.p[0].x, t.p[0].y, 0);
+            Geo.Point p2 = new Geo.Point(t.p[1].x, t.p[1].y, 0);
+            Geo.Point p3 = new Geo.Point(t.p[2].x, t.p[2].y, 0);
+            Geo.Point pt = new Geo.Point(p.x, p.y, 0);
+
+            bool b1 = isright(p1, p2, pt);
+            bool b2 = isright(p3, p1, pt);
+            bool b3 = isright(p2, p3, pt);
+
+            if ((b1) && (b2) && (b3))
+            {
+                return true;
+            }
+            else if ((!b1) && (!b2) && (!b3))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        } // end isinside()
+
+        public static bool isright(Geo.Point p1, Geo.Point p2, Geo.Point p)
+        {
+            // is point p right of line through points p1 and p2 ?
+
+            // this is an ugly way of doing a determinant
+            // should be prettyfied sometime...
+            double a1 = p2.x - p1.x;
+            double a2 = p2.y - p1.y;
+            double t1 = a2;
+            double t2 = -a1;
+            double b1 = p.x - p1.x;
+            double b2 = p.y - p1.y;
+
+            double t = t1 * b1 + t2 * b2;
+            if (t > 0)
+                return true;
+            else
+                return false;
+        } // end isright()
 
 
    } // end DropCutter class
