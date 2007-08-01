@@ -32,6 +32,8 @@ namespace monoCAM
 
         }
 
+        
+
 
         public static void stlmachine(GLWindow g, STLSurf s)
         {
@@ -79,48 +81,36 @@ namespace monoCAM
 
 
             // drop cutter (i.e. add z-data)
-            double R=1,r=0.2;
+            double R=1,r=0.0;
             Cutter cu = new Cutter(R,r);
             List<Geo.Point> drop_points = new List<Geo.Point>();
-
+            
             foreach (Geo.Point p in pointlist)
             {
                 double? v1 = null,v2=null,v3=null,z_new=null,f=null,e1=null,e2=null,e3=null;
+                List<double> zlist = new List<double>();
                 foreach (Geo.Tri t in s.tris)
                 {
-                    // System.Console.WriteLine("tri "+t+" n" + t.n);
+                    
+                    
+                    
                     v1 = DropCutter.VertexTest(cu, p, t.p[0]);
                     v2 = DropCutter.VertexTest(cu, p, t.p[1]);
                     v3 = DropCutter.VertexTest(cu, p, t.p[2]);
-                    List<double> zlist = new List<double>();
                     if (v2 != null)
                     {
                         zlist.Add((double)v2);
-                        /*
-                        if (z_new == null)
-                            z_new = v2;
-                        else if (v2 > z_new)
-                            z_new = v2;
-                         */
                     }
                     if (v1 != null)
                     {
-                        /*
-                        if (v1 > z_new)
-                            z_new = v1;
-                         */
                         zlist.Add((double)v1);
                     }
                     if (v3 != null)
                     {
-                        /*
-                        if (v3 > z_new)
-                            z_new = v3;
-                         */
                         zlist.Add((double)v3);
                     }
-
-           
+                    
+                    
 
                     
                     f = DropCutter.FacetTest(cu, p, t);
@@ -128,10 +118,11 @@ namespace monoCAM
                     {
                         zlist.Add((double)f);
                     }
-
+                    
+                    
                     e1 = DropCutter.EdgeTest(cu, p, t.p[0], t.p[1]);
                     e2 = DropCutter.EdgeTest(cu, p, t.p[1], t.p[2]);
-                    e3 = DropCutter.EdgeTest(cu, p, t.p[2], t.p[0]);
+                    e3 = DropCutter.EdgeTest(cu, p, t.p[0], t.p[2]);
 
                     if (e1 != null)
                         zlist.Add((double)e1);
@@ -139,19 +130,41 @@ namespace monoCAM
                         zlist.Add((double)e2);
                     if (e3 != null)
                         zlist.Add((double)e3);
+                     
 
 
-                    // foreach (double d in zlist)
-                    //    System.Console.Write(d.ToString() + " ");
-                    // System.Console.Write("\n");
+
+                    /*
+                    if (zlist.Count > 1)
+                    {
+                        System.Console.Write("Before: ");
+                        foreach (double d in zlist)
+                            System.Console.Write(d.ToString() + " ");
+                        System.Console.Write("\n");
+                    }
+                     */
 
                     zlist.Sort();
+                    /*
+                    if (zlist.Count > 2)
+                    {
+                        System.Console.Write("After: ");
+                        foreach (double d in zlist)
+                            System.Console.Write(d.ToString() + " ");
+                        System.Console.Write("\n");
+                    }
+                     */
                     // System.Console.Write("Sorted: ");
                     // foreach (double d in zlist)
                     //    System.Console.Write(d.ToString() + " ");
                     // System.Console.Write("\n");
+
                     if (zlist.Count > 0)
                         z_new = zlist[zlist.Count-1];
+                    /*
+                     if (zlist.Count > 1)
+                        System.Console.WriteLine("chosen: " + z_new);
+                     */
                     // System.Console.ReadKey();
 
 
@@ -163,11 +176,15 @@ namespace monoCAM
                 }
             }
 
+            // check to see that STL has not changed
+            
+
             // display drop-points
             int i = 1;
             Geo.Point p0=new Geo.Point();
             foreach (Geo.Point p in drop_points)
             {
+                
                 if (i == 1) // first move
                 {
                     p0 = new Geo.Point(p.x, p.y, 10);
@@ -184,19 +201,23 @@ namespace monoCAM
                     p0 = p;
                 }
                 i++;
+                
+
                 /*
                 GeoPoint pg = new GeoPoint(p);
                 pg.color = System.Drawing.Color.Aqua;
                 g.addGeom(pg); 
-                */
+                 */
+                
             }
 
 
             // display zigzag and points
+            /*
             i = 1;
             foreach (Geo.Point p in pointlist)
             {
-                if (i == 1) // first move
+                if (i == 1) 
                 {
                     p0 = new Geo.Point(p.x, p.y, 10);
                     GeoLine l = new GeoLine(p0, p);
@@ -204,7 +225,7 @@ namespace monoCAM
                     g.addGeom(l);
                     p0 = p;
                 }
-                else  // don't do anything for last move
+                else  
                 {
                     GeoLine l = new GeoLine(p0, p);
                     l.color = System.Drawing.Color.Cyan;
@@ -213,7 +234,7 @@ namespace monoCAM
                 }
                 i++;
             }
-
+            */
 
 
             // dummy test:
@@ -279,6 +300,9 @@ namespace monoCAM
             GeoLine l1 = new GeoLine(p1, p2);
             GeoLine l2 = new GeoLine(p1, p3);
             GeoLine l3 = new GeoLine(p3, p2);
+            l1.color = System.Drawing.Color.RoyalBlue;
+            l2.color = System.Drawing.Color.RoyalBlue;
+            l3.color = System.Drawing.Color.RoyalBlue;
             g.addGeom(l1);
             g.addGeom(l2);
             g.addGeom(l3);
