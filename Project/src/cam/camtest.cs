@@ -19,7 +19,7 @@ namespace monoCAM
                     if (s.GetType() == typeof(STLSurf))
                     {
                         System.Console.WriteLine("found stl surf " + s);
-                        System.Console.WriteLine("running CAM algorithm");
+                        System.Console.Write("running CAM algorithm...");
                         surfs.Add((STLSurf)s);
                     }
             }
@@ -28,7 +28,7 @@ namespace monoCAM
             {
                 camtest.stlmachine(g, s);
             }
-
+            System.Console.Write("Done.\n");
 
         }
 
@@ -109,8 +109,8 @@ namespace monoCAM
                     {
                         zlist.Add((double)v3);
                     }
-                    
-                    
+
+
 
                     
                     f = DropCutter.FacetTest(cu, p, t);
@@ -119,7 +119,7 @@ namespace monoCAM
                         zlist.Add((double)f);
                     }
                     
-                    
+
                     e1 = DropCutter.EdgeTest(cu, p, t.p[0], t.p[1]);
                     e2 = DropCutter.EdgeTest(cu, p, t.p[1], t.p[2]);
                     e3 = DropCutter.EdgeTest(cu, p, t.p[0], t.p[2]);

@@ -53,7 +53,7 @@ namespace monoCAM
     {
         
        
-       public static double? VertexTest(Cutter c,Geo.Point e, Geo.Point p)
+        public static double? VertexTest(Cutter c,Geo.Point e, Geo.Point p)
        {
            // c.R and c.r define the cutter
            // e.x and e.y is the xy-position of the cutter (e.z is ignored)
@@ -109,7 +109,7 @@ namespace monoCAM
             double a = n.x;
             double b = n.y;
             double c = n.z;
-            double d = -n.x * t.p[0].x - n.y * t.p[0].y - n.z * t.p[0].z;
+            double d = - n.x * t.p[0].x - n.y * t.p[0].y - n.z * t.p[0].z;
 
             // the z-direction normal is a special case (?required?)
             // in debug phase, see if this is a useful case!
@@ -118,9 +118,13 @@ namespace monoCAM
                 // System.Console.WriteLine("facet-test:z-dir normal case!");
                 e.z = t.p[0].z;
                 cc = new Geo.Point(e.x,e.y,e.z);
-                if (isinside(t,cc))
+                if (isinside(t, cc))
+                {
+                    // System.Console.WriteLine("facet-test:z-dir normal case!, returning {0}",e.z);
+                    // System.Console.ReadKey();
                     return e.z;
-                else 
+                }
+                else
                     return null;
             }
 
@@ -147,15 +151,23 @@ namespace monoCAM
             Vector rc = new Vector();
             rc = ve +((cu.R-cu.r)*Math.Tan(theta)+cu.r)*u - ((cu.R-cu.r)/Math.Cos(theta)+cu.r)*n;
 
+            /*
+            if (rc.z > 1000)
+                System.Console.WriteLine("z>1000 !");
+             */
+
             cc = new Geo.Point(rc.x, rc.y, rc.z);
+
+            // check that CC lies in plane:
+            // a*rc(1)+b*rc(2)+c*rc(3)+d
+            double test = a * cc.x + b * cc.y + c * cc.z + d;
+            if (test > 0.000001)
+                System.Console.WriteLine("FacetTest ERROR! CC point not in plane");
 
             if (isinside(t, cc))
                 return zf;
             else
                 return null;
-
-
-
 
         } // end FacetTest
 
@@ -377,13 +389,21 @@ namespace monoCAM
 
         public static bool isinrange(double start, double end, double x)
         {
-            if ((start > x) && (x < end))
-                return false;
-            else if ((end < x) && (x > start))
-                return false;
-            else
+            // order input
+            double s_tmp = start;
+            //double e_tmp = end;
+            if (start > end)
+            {
+                start = end;
+                end = s_tmp;
+            }
+
+            if ((start < x) && (x < end))
                 return true;
+            else
+                return false;
         }
+
         public static bool isinside(Geo.Tri t, Geo.Point p)
         {
             // point in triangle test
