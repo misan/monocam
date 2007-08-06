@@ -39,9 +39,32 @@ namespace monoCAM
         {
             List<Geo.Point> pointlist=new List<Geo.Point>();
 
+            // seems to work...
+            // foreach (Geo.Tri t in s.tris)
+            //    System.Console.WriteLine("loop1 triangles " + t);
+            // System.Console.ReadKey();
+
             // recalculate normal data
+            // create bounding box data
             foreach (Geo.Tri t in s.tris)
+            {
                 t.recalc_normals();
+                // System.Console.WriteLine("before " + t);
+                t.calc_bbox(); // FIXME: why doen't bb-data 'stick' ??
+                // System.Console.WriteLine("after " + t);
+                // System.Console.WriteLine("after maxx:" + t.bb.maxx + " minx:"+t.bb.minx);
+                //System.Console.ReadKey();
+            }
+
+            /*
+            // FIXME: if we check bb-data here it is gone!!(??)
+            foreach (Geo.Tri t in s.tris)
+            {
+                System.Console.WriteLine("loop2 triangles " + t);
+                System.Console.WriteLine("loop2 direct maxx" + t.bb.maxx + " minx:" + t.bb.minx);
+            }
+            System.Console.ReadKey();
+            */
 
             // find bounding box (this should probably be done in the STLSurf class?)
             double minx = 0, maxx = 10, miny = 0, maxy = 10;
@@ -84,14 +107,44 @@ namespace monoCAM
             double R=1,r=0.0;
             Cutter cu = new Cutter(R,r);
             List<Geo.Point> drop_points = new List<Geo.Point>();
-            
+            double redundant = 0;
+            double checks = 0;
             foreach (Geo.Point p in pointlist)
             {
+            
+
                 double? v1 = null,v2=null,v3=null,z_new=null,f=null,e1=null,e2=null,e3=null;
                 List<double> zlist = new List<double>();
+                
                 foreach (Geo.Tri t in s.tris)
                 {
-                    
+                    checks++;
+                    t.calc_bbox(); // why do we have to re-calculate bb-data here??
+
+                    //System.Console.WriteLine("testing triangle" + t);
+                    if (t.bb.minx > (p.x + cu.R))
+                    {
+                        redundant++;
+                        continue;
+                    }
+                    else if (t.bb.maxx < (p.x - cu.R))
+                    {   
+                        redundant++;
+                        continue;
+                    }
+                    if (t.bb.miny > (p.y + cu.R))
+                    {
+                        redundant++;
+                        continue;
+                    }
+                    if (t.bb.maxy < (p.y - cu.R))
+                    {
+                        redundant++;
+                        continue;
+                    }
+
+
+
                     
                     
                     v1 = DropCutter.VertexTest(cu, p, t.p[0]);
@@ -168,13 +221,17 @@ namespace monoCAM
                     // System.Console.ReadKey();
 
 
-                }
+                } // end triangle loop
 
                 if (z_new != null)
                 {
                     drop_points.Add(new Geo.Point(p.x, p.y, (double)z_new));
                 }
-            }
+
+
+            } // end point-list loop
+
+            System.Console.WriteLine("checked: "+ checks + " redundant: " + redundant);
 
             // check to see that STL has not changed
             
@@ -277,6 +334,53 @@ namespace monoCAM
             }
         }
 
+        // test for bounding box function
+        public static void bbox_test(GLWindow g)
+        {
+            // draw a triangle
+            Geo.Point p1 = new Geo.Point(0.1, 0.1, 0);
+            Geo.Point p2 = new Geo.Point(0.8, 0.3, 0);
+            Geo.Point p3 = new Geo.Point(0.2, 0.6, 0);
+            GeoLine l1 = new GeoLine(p1, p2);
+            GeoLine l2 = new GeoLine(p1, p3);
+            GeoLine l3 = new GeoLine(p3, p2);
+            l1.color = System.Drawing.Color.RoyalBlue;
+            l2.color = System.Drawing.Color.RoyalBlue;
+            l3.color = System.Drawing.Color.RoyalBlue;
+            g.addGeom(l1);
+            g.addGeom(l2);
+            g.addGeom(l3);
+
+            // create triangle and calculate bounding box
+            Geo.Tri t = new Geo.Tri(p1, p2, p3);
+            t.calc_bbox();
+            Geo.Point a = new Geo.Point(t.bb.minx, t.bb.miny, 0);
+            Geo.Point b = new Geo.Point(t.bb.maxx, t.bb.miny, 0);
+            Geo.Point c = new Geo.Point(t.bb.maxx, t.bb.maxy, 0);
+            Geo.Point d = new Geo.Point(t.bb.minx, t.bb.maxy, 0);
+            GeoLine h1 = new GeoLine(a, b);
+            GeoLine h2 = new GeoLine(b, c);
+            GeoLine h3 = new GeoLine(c, d);
+            GeoLine h4 = new GeoLine(d, a);
+            h1.color = System.Drawing.Color.Red;
+            h2.color = System.Drawing.Color.Red;
+            h3.color = System.Drawing.Color.Red;
+            h4.color = System.Drawing.Color.Red;
+            g.addGeom(h1);
+            g.addGeom(h2);
+            g.addGeom(h3);
+            g.addGeom(h4);
+
+            // check that the points are OK
+            GeoPoint v1 = new GeoPoint(t.bb.minx, t.bb.miny, 0);
+            v1.color = System.Drawing.Color.Green;
+            g.addGeom(v1);
+            GeoPoint v2 = new GeoPoint(t.bb.maxx, t.bb.maxy, 0);
+            v2.color = System.Drawing.Color.Azure;
+            g.addGeom(v2);
+
+
+        }
 
         // testing that the isinside function works OK
         public static void isinside_test(GLWindow g)

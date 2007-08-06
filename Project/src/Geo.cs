@@ -80,14 +80,22 @@ namespace monoCAM
            }
        }
 
+       public struct Bbox // bounding box for triangles and cutter
+       {
+           public double maxx, minx, maxy, miny;
+       }
+
        public struct Tri // consider making it a class so we can check for null
        {
 
            public Point[] p;
            public Vector n;
+           public Bbox bb;
+
            public Tri(Point P1, Point P2, Point P3)
            {
                p = new Point[3];
+               bb = new Bbox();
                p[0] = P1;
                p[1] = P2;
                p[2] = P3;
@@ -101,6 +109,7 @@ namespace monoCAM
            public Tri(Point P1, Point P2, Point P3, Vector N)
            {
                p = new Point[3];
+               bb = new Bbox();
                p[0] = P1;
                p[1] = P2;
                p[2] = P3;
@@ -110,6 +119,7 @@ namespace monoCAM
            public Tri(Vector N) {
                // a strange constructor indeed...
                p = new Point[3];
+               bb = new Bbox();
                p[0] = new Point();
                p[1] = new Point();
                p[2] = new Point();
@@ -125,10 +135,45 @@ namespace monoCAM
                n = (1 / n.Length()) * n; // normalize to length==1
            }
 
+           public void calc_bbox()
+           {
+               // find the bounxing box in the XY plane for the triangle
+               bb.maxx = p[0].x;
+               bb.minx = p[0].x;
+               bb.maxy = p[0].y;
+               bb.miny = p[0].y;
 
+               if (p[1].x < bb.minx)
+                   bb.minx = p[1].x;
+               if (p[2].x < bb.minx)
+                   bb.minx = p[2].x;
 
+               if (p[1].x > bb.maxx)
+                   bb.maxx = p[1].x;
+               if (p[2].x > bb.maxx)
+                   bb.maxx = p[2].x;
 
-       }
+               if (p[1].y < bb.miny)
+                   bb.miny = p[1].y;
+               if (p[2].y < bb.miny)
+                   bb.miny = p[2].y;
+
+               if (p[1].y > bb.maxy)
+                   bb.maxy = p[1].y;
+               if (p[2].y > bb.maxy)
+                   bb.maxy = p[2].y;
+
+               // System.Console.WriteLine("minx={0} maxx={1} miny={2} maxy={3}",bb.minx,bb.maxx,bb.miny,bb.maxy);
+               // System.Console.ReadKey();
+
+           }
+
+            public override string  ToString()
+            {
+                return "bb.minx="+bb.minx.ToString()+" bb.maxx="+bb.maxx.ToString();
+ 	        } 
+
+       } // end Tri struct
 
        public struct glColor
        {
@@ -395,7 +440,7 @@ namespace monoCAM
            return "STLSurf with " + tris.Count + " triangles";
        }
 
-   }
+   } // end STLSurf class
 
    public class Vector
    {

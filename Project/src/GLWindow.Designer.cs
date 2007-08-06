@@ -41,11 +41,12 @@ namespace monoCAM
             this.orthographicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testCAMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.isinsideTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GLPanel = new Tao.Platform.Windows.SimpleOpenGlControl();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.testsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.isinsideTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bBoxTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -164,6 +165,22 @@ namespace monoCAM
             this.testCAMToolStripMenuItem.Text = "Test-CAM";
             this.testCAMToolStripMenuItem.Click += new System.EventHandler(this.testCAMToolStripMenuItem_Click);
             // 
+            // testsToolStripMenuItem
+            // 
+            this.testsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.isinsideTestToolStripMenuItem,
+            this.bBoxTestToolStripMenuItem});
+            this.testsToolStripMenuItem.Name = "testsToolStripMenuItem";
+            this.testsToolStripMenuItem.Size = new System.Drawing.Size(57, 22);
+            this.testsToolStripMenuItem.Text = "Tests";
+            // 
+            // isinsideTestToolStripMenuItem
+            // 
+            this.isinsideTestToolStripMenuItem.Name = "isinsideTestToolStripMenuItem";
+            this.isinsideTestToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.isinsideTestToolStripMenuItem.Text = "Isinside Test";
+            this.isinsideTestToolStripMenuItem.Click += new System.EventHandler(this.isinsideTestToolStripMenuItem_Click);
+            // 
             // GLPanel
             // 
             this.GLPanel.AccumBits = ((byte)(0));
@@ -219,20 +236,12 @@ namespace monoCAM
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
             // 
-            // testsToolStripMenuItem
+            // bBoxTestToolStripMenuItem
             // 
-            this.testsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.isinsideTestToolStripMenuItem});
-            this.testsToolStripMenuItem.Name = "testsToolStripMenuItem";
-            this.testsToolStripMenuItem.Size = new System.Drawing.Size(57, 22);
-            this.testsToolStripMenuItem.Text = "Tests";
-            // 
-            // isinsideTestToolStripMenuItem
-            // 
-            this.isinsideTestToolStripMenuItem.Name = "isinsideTestToolStripMenuItem";
-            this.isinsideTestToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.isinsideTestToolStripMenuItem.Text = "Isinside Test";
-            this.isinsideTestToolStripMenuItem.Click += new System.EventHandler(this.isinsideTestToolStripMenuItem_Click);
+            this.bBoxTestToolStripMenuItem.Name = "bBoxTestToolStripMenuItem";
+            this.bBoxTestToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.bBoxTestToolStripMenuItem.Text = "BBox Test";
+            this.bBoxTestToolStripMenuItem.Click += new System.EventHandler(this.bBoxTestToolStripMenuItem_Click);
             // 
             // GLWindow
             // 
@@ -279,5 +288,6 @@ namespace monoCAM
         private System.Windows.Forms.ToolStripMenuItem testCAMToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem isinsideTestToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bBoxTestToolStripMenuItem;
     }
 }
