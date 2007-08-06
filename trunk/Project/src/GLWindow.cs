@@ -174,6 +174,10 @@ namespace monoCAM
                 cam.y_view(true);
             else if (e.KeyCode == Keys.Z)  // Z for +Z-view
                 cam.z_view(true);
+            else if (e.KeyCode == Keys.Oemplus)
+                cam.zoom(+0.1);
+            else if (e.KeyCode == Keys.OemMinus)
+                cam.zoom(-0.1);
       
             GLWindow_Resize(this, null);
             //GLPanel_Paint(this, null);
@@ -230,6 +234,7 @@ namespace monoCAM
             //System.Console.Write("adding GeoPoint!: ");
             GeoPoint p = new GeoPoint((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
             System.Console.WriteLine(p);
+            p.color = System.Drawing.Color.Green;
             addGeom(p);
         }
 
@@ -260,6 +265,7 @@ namespace monoCAM
             Geo.Point p1 = new Geo.Point((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
             Geo.Point p2 = new Geo.Point((double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10), (double)RandomNumber(-10, 10));
             GeoLine l = new GeoLine(p1, p2);
+            l.color = System.Drawing.Color.Red;
             addGeom(l);
             // l.gengldata();
             // Renderer.MakeRenderList(ref l.gldata[0]);
@@ -372,6 +378,11 @@ namespace monoCAM
         private void isinsideTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             camtest.isinside_test(this);
+        }
+
+        private void bBoxTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            camtest.bbox_test(this);
         }
 
 

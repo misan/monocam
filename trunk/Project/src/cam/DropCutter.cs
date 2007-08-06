@@ -28,11 +28,11 @@ namespace monoCAM
             else
             {
                 // ERROR!
-                // Throw an exception or something
+                System.Console.WriteLine("Cutter: ERROR R<0!");
                 R = 1;
             }
 
-            if ((rset > 0) && (rset <= R))
+            if ((rset >= 0) && (rset <= R))
             {
                 r = rset;
             }
@@ -40,6 +40,7 @@ namespace monoCAM
             {
                 // ERROR!
                 // Throw an exception or something
+                System.Console.WriteLine("Cutter: ERROR r<0 or r>R!");
                 r = 0;
             }
         }
