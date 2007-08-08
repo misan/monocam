@@ -48,12 +48,8 @@ namespace monoCAM
             // create bounding box data
             foreach (Geo.Tri t in s.tris)
             {
-                t.recalc_normals();
-                // System.Console.WriteLine("before " + t);
+                t.recalc_normals(); // FIXME why don't new values stick??
                 t.calc_bbox(); // FIXME: why doen't bb-data 'stick' ??
-                // System.Console.WriteLine("after " + t);
-                // System.Console.WriteLine("after maxx:" + t.bb.maxx + " minx:"+t.bb.minx);
-                //System.Console.ReadKey();
             }
 
             /*
@@ -104,7 +100,7 @@ namespace monoCAM
 
 
             // drop cutter (i.e. add z-data)
-            double R=1,r=0.0;
+            double R=1,r=0.2;
             Cutter cu = new Cutter(R,r);
             List<Geo.Point> drop_points = new List<Geo.Point>();
             double redundant = 0;
@@ -232,6 +228,7 @@ namespace monoCAM
             } // end point-list loop
 
             System.Console.WriteLine("checked: "+ checks + " redundant: " + redundant);
+            System.Console.WriteLine("relevant: "+(checks-redundant) + "  ("+100*(double)(checks-redundant)/(double)checks+"%)");
 
             // check to see that STL has not changed
             
@@ -413,7 +410,7 @@ namespace monoCAM
             // p.color = System.Drawing.Color.Aqua;
 
             // draw points
-            Geo.Tri t = new Geo.Tri(p1, p2, p3);
+            Geo.Tri t = new Geo.Tri(p2, p3, p1);
             foreach (GeoPoint p in points)
             {
                 if (DropCutter.isinside(t,p.p))
@@ -426,7 +423,7 @@ namespace monoCAM
             
         }
 
-    }
+    } // end Drop Cutter class
 
 
 }

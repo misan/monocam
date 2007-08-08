@@ -92,6 +92,9 @@ namespace monoCAM
         public static double? FacetTest(Cutter cu, Geo.Point e, Geo.Tri t)
         { 
             // local copy of the surface normal
+
+            t.recalc_normals(); // don't trust the pre-calculated normal! calculate it separately here.
+
             Vector n = new Vector(t.n.x, t.n.y, t.n.z);
             Geo.Point cc;
 
@@ -166,7 +169,13 @@ namespace monoCAM
                 System.Console.WriteLine("FacetTest ERROR! CC point not in plane");
 
             if (isinside(t, cc))
+            {
+                if (Math.Abs(zf) > 100)
+                {
+                    System.Console.WriteLine("serious problem... at" +e.x + "," + e.y);
+                }
                 return zf;
+            }
             else
                 return null;
 
