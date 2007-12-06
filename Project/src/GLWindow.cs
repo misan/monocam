@@ -285,14 +285,14 @@ namespace monoCAM
         {
             // System.Console.WriteLine("mousemove");
             double dragx, dragy;
-            double theta_scale = 0.01;  // multiply drag amount (in pixels) by this to get angle
-            double fi_scale = 0.01;
-            double pan_scale = 0.01;
+            // double theta_scale = 0.01;  // multiply drag amount (in pixels) by this to get angle
+            // double fi_scale = 0.01;
+            // double pan_scale = 0.01;
 
-            double x_limit = 0.03;  // require this amount of angle change before updating view
-            double y_limit = 0.03;
-            double x_pan_limit = 0.1;
-            double y_pan_limit = 0.1;
+            double x_limit = 1;  // require this amount of angle change before updating view
+            double y_limit = 1;
+            double x_pan_limit = 1; // require this amount of panning before updating view
+            double y_pan_limit = 1;
             
             if (e.Button != MouseButtons.None)
             {
@@ -301,8 +301,8 @@ namespace monoCAM
                 switch (e.Button)
                 {
                     case (MouseButtons.Right):
-                        dragx = (double)(e.X - mdownx) * theta_scale;
-                        dragy = (double)(e.Y - mdowny) * fi_scale;
+                        dragx = e.X - mdownx;
+                        dragy = e.Y - mdowny;
                         if (Math.Abs(dragx) > x_limit)
                         {
                             cam.rotate_theta(dragx);
@@ -320,9 +320,9 @@ namespace monoCAM
                             break;
                         }
                         break;
-                    case (MouseButtons.Middle):
-                        dragx = (double)(e.X - mdownx) * pan_scale;
-                        dragy = (double)(e.Y - mdowny) * pan_scale;
+                    case (MouseButtons.Left):
+                        dragx = (e.X - mdownx);
+                        dragy = (e.Y - mdowny);
                         if (Math.Abs(dragx) > x_pan_limit)
                         {
                             cam.pan_lr(-dragx);

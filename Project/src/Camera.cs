@@ -54,6 +54,7 @@ namespace monoCAM
 
         public void zoom(double amount)
         {
+
             _r += amount;
             if (_r <= 0)
                 _r = r_minimum;
@@ -65,14 +66,17 @@ namespace monoCAM
             // move cen to the left
             Vector v = up.Cross(eye - cen);
             v.normalize();
+            amount = 0.001 * amount * _r;
             cen.x += amount * v.x;
             cen.y += amount * v.y;
             cen.z += amount * v.z;
             recalc();
         }
+
         public void pan_ud(double amount)
         {
             // move cen to the left
+            amount = 0.001*amount * _r;
             cen.x += amount * up.x;
             cen.y += amount * up.y;
             cen.z += amount * up.z;
@@ -81,7 +85,8 @@ namespace monoCAM
 
         public void rotate_fi(double amount)
         {
-            _fi += amount;
+            double angle = 0.1* amount / _r;
+            _fi -= angle;
             if (_fi >= Math.PI)
                 _fi = Math.PI;
             else if (_fi <= 0)
@@ -94,7 +99,8 @@ namespace monoCAM
 
         public void rotate_theta(double amount)
         {
-            _theta += amount;
+            double angle = 0.1* amount / _r;
+            _theta -= angle;
 
             recalc();
             // System.Console.WriteLine("rotated to theta={0}", _theta);
