@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 // this file should contain geometry stuff for monoCAM
-// ToDo:
-// we need a geometry container that contains all geometry.
-// it should support operations like these:
-// GeoPoint mypoint = new GeoPoint(x,y,z)
-// geo_cont.add(mypoint)
-// geo_cont.delete(mypoint)
-//
-// all the objects in this container should have a mechanism
-// for letting the renderer know that something has changed.
 
 namespace monoCAM
 {
@@ -63,8 +54,6 @@ namespace monoCAM
            public double maxx, minx, maxy, miny;
        }
 
-
-
        public Geo()
        {       
            // default constructor
@@ -87,13 +76,11 @@ namespace monoCAM
        public Point()
        {
            SetPos(0, 0, 0);
-
        }
 
        public Point(double x, double y, double z)
            // constructor with literal initial values
        {
-           // GeoPoint();
            SetPos(x, y, z);
       
        }
@@ -101,38 +88,25 @@ namespace monoCAM
        public Point(Point p_in)
            // constructor with another point as initial values
        {
-           x = p_in.x;
-           y = p_in.y;
-           z = p_in.z;
-     
+           SetPos(p_in.x, p_in.y, p_in.z);
        }     
-
- 
-
-       public void SetPos(double X, double Y, double Z)
-       {
-           x = X;
-           y = Y;
-           z = Z;
-       }
 
        public override string ToString()
        {
-           return "Point(" + x + " , " + y + " , " + z + ")";
+           return "Point(" + x.ToString("N3") + " " + y.ToString("N3") + " " + z.ToString("N3")+")";
        }
 
        public static Point operator -(Point p1, Point p2)
+           // subtracting two points from each other subtracts the coordinates
        {
            return new Point(p1.x - p2.x, p1.y - p2.y, p1.z - p2.z);
        }
 
    }
 
-
-
    class Line : Geo
    {
-       // experimental Line class. May be used initially for CAM output
+       // experimental Line class
        public Point start, end;
        public Line(Point s, Point e)
        {
@@ -151,7 +125,6 @@ namespace monoCAM
        }
 
    }
-
 
    public class Tri : Geo 
    {
@@ -181,9 +154,7 @@ namespace monoCAM
            p[0] = new Point(0,0,0);
            p[1] = new Point(0, 0, 0);
            p[2] = new Point(0, 0, 0);
-           // if normal is not given, calculate it here.
-
-           n = null; // normalize to length==1
+           n = null; 
        }
 
        public Tri(Point P1, Point P2, Point P3, Vector N)
@@ -246,7 +217,6 @@ namespace monoCAM
 
            // System.Console.WriteLine("minx={0} maxx={1} miny={2} maxy={3}",bb.minx,bb.maxx,bb.miny,bb.maxy);
            // System.Console.ReadKey();
-
        }
 
        public override string ToString()
@@ -254,11 +224,11 @@ namespace monoCAM
            return "bb.minx=" + bb.minx.ToString() + " bb.maxx=" + bb.maxx.ToString();
        }
 
-   } // end Tri struct
-
+   } // end Tri
 
     public class ToolPath : Geo
     {
+        // this should become a tool-path class
         public List<Point> points;
         public ToolPath()
         {
@@ -270,9 +240,7 @@ namespace monoCAM
    public class STLSurf : Geo
    {
        // experimental STL surface class
-       public List<Tri> tris;  // a list that holds the vertices.
-       // the length of the list should always be a multiple of three!
-
+       public List<Tri> tris;  // a list that holds the triangles.
 
        public STLSurf()
        {
@@ -287,7 +255,7 @@ namespace monoCAM
 
        public override string ToString()
        {
-           return "STLSurf with " + tris.Count + " triangles";
+           return "STLSurf (" + tris.Count + " triangles)";
        }
 
    } // end STLSurf class
@@ -300,20 +268,20 @@ namespace monoCAM
        public double x, y, z;
        public Vector(double X, double Y, double Z)
        {
-           this.x = X;
-           this.y = Y;
-           this.z = Z;
+           x = X;
+           y = Y;
+           z = Z;
        }
        public Vector()
        {
-           this.x = 0;
-           this.y = 0;
-           this.z = 0;
+           x = 0;
+           y = 0;
+           z = 0;
        }
 
        public override string ToString()
        {
-           return "("+x+","+y+","+z+")";
+           return "Vector ("+x+","+y+","+z+")";
        }
 
        public static Vector operator *(double a, Vector v)
@@ -343,7 +311,6 @@ namespace monoCAM
        public Vector Cross(Vector v)
        {
            // cross product
-           // NEEDS TESTING!
            double xc = y * v.z - z * v.y;
            double yc = z * v.x - x * v.z;
            double zc = x * v.y - y * v.x;
@@ -360,8 +327,9 @@ namespace monoCAM
            return new Vector(xc, yc, zc);
        }
        public void normalize()
-       {
-           double l = Math.Sqrt(Math.Pow(x,2)+Math.Pow(y,2)+Math.Pow(z,2));
+       {    
+           // makes Vector.Length()==1 be true
+           double l = this.Length();
            x = x / l;
            y = y / l;
            z = z / l;
@@ -372,5 +340,7 @@ namespace monoCAM
            return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2));
        }
 
-   }
-}
+   } // end Vector
+
+
+} // end namespace
