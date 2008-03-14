@@ -2,16 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+// this function reads an ASCII STL files and creates an STLSurf from it
+
 namespace monoCAM
 {
    class STL
    {
        static public STLSurf Load(System.IO.StreamReader fs)
        {
-           // Here's where autodetection will be provided for loading binary stl files and by wrapping STLA(scii) and STLB(inary)
-           // but for now as only one format is provided, not bothering with it, we need to define a object format for handling file loading/saving
-           // System.IO.StreamReader fs = new System.IO.StreamReader(FileName);
-
            STLSurf surf = new STLSurf();
            int state = 0;
            int counter = 0;

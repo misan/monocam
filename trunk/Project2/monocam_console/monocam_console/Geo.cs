@@ -91,6 +91,14 @@ namespace monoCAM
            SetPos(p_in.x, p_in.y, p_in.z);
        }     
 
+       public void SetPos(double X,double Y,double Z)
+       {    
+           x = X;
+           y = Y;
+           z = Z;
+
+       }
+
        public override string ToString()
        {
            return "Point(" + x.ToString("N3") + " " + y.ToString("N3") + " " + z.ToString("N3")+")";
