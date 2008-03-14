@@ -10,14 +10,13 @@ namespace monoCAM
     {
         public static void run(GeoCollection g)
         {
-            // finds all STL surfaces and runs stlmachine on them
-
+            // find all STL surfaces and runs stlmachine on them
             List<STLSurf> surfs = new List<STLSurf>();
             foreach (Geo s in g.obj_list)
             {
                     if (s.GetType() == typeof(STLSurf))
                     {
-                        System.Console.WriteLine("found stl surf " + s);
+                        System.Console.WriteLine("found " + s);
                         System.Console.WriteLine("running CAM algorithm on {0} ...",s);
                         surfs.Add((STLSurf)s);
                     }
@@ -65,6 +64,7 @@ namespace monoCAM
             double minx = 0, maxx = 10, miny = 0, maxy = 10;
 
             // generate XY pattern (a general zigzag-strategy, needed also for pocketing)
+            // store in a list called pointlist
             double Nx=3;
             double Ny=3;
             double dx=(maxx-minx)/(double)(Nx-1);
@@ -79,7 +79,7 @@ namespace monoCAM
                     {
                         pointlist.Add(new Point(x,y,5));
                         // System.Console.WriteLine("x:"+x+" y:"+y);
-                        y += dy;
+                        y += dy; // go forward in the y-axis direction 
                         // System.Console.ReadKey();
                     }
                 }
@@ -90,7 +90,7 @@ namespace monoCAM
                     {
                         pointlist.Add(new Point(x,y,5));
                         //System.Console.WriteLine("x:" + x + " y:" + y);
-                        y -= dy;
+                        y -= dy; // go backward in the y-axis direction
                         //System.Console.ReadKey();
                     }
                 }
@@ -99,25 +99,38 @@ namespace monoCAM
 
 
             // drop cutter (i.e. add z-data)
-            double R=1,r=0.2;
-            Cutter cu = new Cutter(R,r);
-            List<Point> drop_points = new List<Point>();
-            double redundant = 0;
-            double checks = 0;
 
-            foreach (Point p in pointlist)
+            double R=1,r=0.2; // this is the cutter definition
+            Cutter cu = new Cutter(R,r);
+
+            List<Point> drop_points = new List<Point>();
+            double redundant = 0; // number of unneccesary calls to drop-cutter
+            double checks = 0;    // number of relevant calls
+
+            foreach (Point p in pointlist) // loop through each point
             {
                 double? v1 = null,v2=null,v3=null,z_new=null,f=null,e1=null,e2=null,e3=null;
+                
+                // store the possible z-values in this list
+                // the highest one of these should be chosen in the end
                 List<double> zlist = new List<double>();
                 
+                // loop through each triangle
+                // FIXME: here a bucketing-scheme or a kd-tree search should
+                // be implemented so that only triangles really under the cutter
+                // are tested against.
                 foreach (Tri t in s.tris)
                 {
                     checks++;
                     t.calc_bbox(); // FIXME: why do we have to re-calculate bb-data here??
 
                     //System.Console.WriteLine("testing triangle" + t);
+
+                    // here are four ways the triangle bounding box can be
+                    // outside the cutter bounding box
+                    // redundant could be used to test the performance of bucketing/kd-tree
                     if (t.bb.minx > (p.x + cu.R))
-                    {
+                    {   
                         redundant++;
                         continue;
                     }
@@ -174,46 +187,20 @@ namespace monoCAM
                         zlist.Add((double)e2);
                     if (e3 != null)
                         zlist.Add((double)e3);
-                     
 
-
-
-                    /*
-                    if (zlist.Count > 1)
-                    {
-                        System.Console.Write("Before: ");
-                        foreach (double d in zlist)
-                            System.Console.Write(d.ToString() + " ");
-                        System.Console.Write("\n");
-                    }
-                     */
-
+                    // now we have some suggestions for z in zlist
+                    // by sorting it we get the highest one at the end of the list
                     zlist.Sort();
-                    /*
-                    if (zlist.Count > 2)
-                    {
-                        System.Console.Write("After: ");
-                        foreach (double d in zlist)
-                            System.Console.Write(d.ToString() + " ");
-                        System.Console.Write("\n");
-                    }
-                     */
-                    // System.Console.Write("Sorted: ");
-                    // foreach (double d in zlist)
-                    //    System.Console.Write(d.ToString() + " ");
-                    // System.Console.Write("\n");
-
+                    
+                    // if there's anything in the list, return the last element
                     if (zlist.Count > 0)
                         z_new = zlist[zlist.Count-1];
-                    /*
-                     if (zlist.Count > 1)
-                        System.Console.WriteLine("chosen: " + z_new);
-                     */
-                    // System.Console.ReadKey();
-
 
                 } // end triangle loop
 
+                // we've gone through all triangles for this XY-location
+                // if we found a z-value, let's add the valid cutter location
+                // to a list drop_points
                 if (z_new != null)
                 {
                     drop_points.Add(new Point(p.x, p.y, (double)z_new));
@@ -222,13 +209,17 @@ namespace monoCAM
 
             } // end point-list loop
 
-            System.Console.WriteLine("checked: "+ checks + " redundant: " + redundant);
-            System.Console.WriteLine("relevant: "+(checks-redundant) + "  ("+100*(double)(checks-redundant)/(double)checks+"%)");
 
-            // check to see that STL has not changed
+            // print some statistics:
+            System.Console.WriteLine("checked: "+ checks + " redundant: " + redundant);
+            double fraction=(100*(double)(checks-redundant)/(double)checks);
+            System.Console.WriteLine("relevant: "+(checks-redundant) + "  ("+fraction.ToString("N3")+"%)");
+
+           
             
 
-            // display drop-points
+            // FIXME: now a toolpath object should be created 
+            // that has rapids/feeds according to the points calculated above
             int i = 1;
             Point p0=new Point();
             foreach (Point p in drop_points)
@@ -248,51 +239,7 @@ namespace monoCAM
                     p0 = p;
                 }
                 i++;
-                
-
-                /*
-                GeoPoint pg = new GeoPoint(p);
-                pg.color = System.Drawing.Color.Aqua;
-                g.addGeom(pg); 
-                 */
-                
             }
-
-
-            // display zigzag and points
-            /*
-            i = 1;
-            foreach (Geo.Point p in pointlist)
-            {
-                if (i == 1) 
-                {
-                    p0 = new Geo.Point(p.x, p.y, 10);
-                    GeoLine l = new GeoLine(p0, p);
-                    l.color = System.Drawing.Color.Yellow;
-                    g.addGeom(l);
-                    p0 = p;
-                }
-                else  
-                {
-                    GeoLine l = new GeoLine(p0, p);
-                    l.color = System.Drawing.Color.Cyan;
-                    g.addGeom(l);
-                    p0 = p;
-                }
-                i++;
-            }
-            */
-
-
-            // dummy test:
-            /*
-            foreach (Geo.Tri t in s.tris)
-            {
-                GeoPoint p = new GeoPoint(t.p[0].x, t.p[0].y, t.p[0].z);
-                pointlist.Add(p);
-            }
-            */
-
 
         }
 
@@ -323,21 +270,11 @@ namespace monoCAM
             Line h2 = new Line(b, c);
             Line h3 = new Line(c, d);
             Line h4 = new Line(d, a);
-
             g.add(h1);
             g.add(h2);
             g.add(h3);
             g.add(h4);
-
-            // check that the points are OK
-            //GeoPoint v1 = new GeoPoint(t.bb.minx, t.bb.miny, 0);
-
-            //g.add(v1);
-            //GeoPoint v2 = new GeoPoint(t.bb.maxx, t.bb.maxy, 0);
-            //g.add(v2);
         }
-
-
 
         // isinside unit test
         public static void isinside_test(GeoCollection g)
