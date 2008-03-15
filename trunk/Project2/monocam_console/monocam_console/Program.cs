@@ -32,6 +32,27 @@ namespace monoCAM
 
             WriteGeoColl(g);
 
+            // test kd-tree
+            // kdtree.spread(s.tris, cutdim.MINUS_X);
+
+            // test enum type
+            cutdim d = 0;
+            System.Console.WriteLine(d);
+            d = d + 1;
+            System.Console.WriteLine(d);
+            d = d + 1;
+            System.Console.WriteLine(d);
+            d = d + 1;
+            System.Console.WriteLine(d);
+            d = d + 1;
+            System.Console.WriteLine(d);
+            d = d + 1;
+            System.Console.WriteLine(d);
+            d = d + 1;
+            System.Console.WriteLine(d);
+            d = d + 1;
+            System.Console.WriteLine(d);
+
             // wait for user to end program
             System.Console.WriteLine("Press any key to end");
             System.Console.ReadKey();
