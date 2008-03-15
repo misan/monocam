@@ -107,6 +107,10 @@ namespace monoCAM
             double redundant = 0; // number of unneccesary calls to drop-cutter
             double checks = 0;    // number of relevant calls
 
+            // FIXME: these calls to drop-cutter are independent of each other
+            // thus the points could/should be divided into many subsets
+            // and each subset is processed by a seprarate thread
+            // this should give a substantial speedup on multi-core cpus
             foreach (Point p in pointlist) // loop through each point
             {
                 double? v1 = null,v2=null,v3=null,z_new=null,f=null,e1=null,e2=null,e3=null;

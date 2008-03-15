@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="camtest.cs" />
+    <Compile Include="kdtree.cs" />
     <Compile Include="DropCutter.cs" />
     <Compile Include="Geo.cs" />
     <Compile Include="Program.cs" />
