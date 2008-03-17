@@ -223,8 +223,8 @@ namespace monoCAM
            if (p[2].y > bb.maxy)
                bb.maxy = p[2].y;
 
-           // System.Console.WriteLine("minx={0} maxx={1} miny={2} maxy={3}",bb.minx,bb.maxx,bb.miny,bb.maxy);
-           // System.Console.ReadKey();
+           //System.Console.WriteLine("minx={0} maxx={1} miny={2} maxy={3}",bb.minx,bb.maxx,bb.miny,bb.maxy);
+           //System.Console.ReadKey();
        }
 
        public override string ToString()
