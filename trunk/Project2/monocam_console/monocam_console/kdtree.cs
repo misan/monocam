@@ -44,7 +44,7 @@ namespace monoCAM
             // this should never happen...
             if (tris.Count == 0)
             {
-                System.Console.WriteLine("kdtree build ERROR (tris.Count==0)");
+                //System.Console.WriteLine("kdtree build ERROR (tris.Count==0)");
                 return new kd_node(0, 0, null, null, tris);
             }
             
@@ -52,21 +52,21 @@ namespace monoCAM
             // a rectangle smaller than XX, 
             // OR if only one triangle remains,
             // return a bucket node
-            if (tris.Count<=10)
+            if (tris.Count<=1)
             {
                 kd_node bucket_node = new kd_node(0, 0, null, null, tris);
-                System.Console.WriteLine("returning bucket node with {0} triangles", tris.Count);
+                //System.Console.WriteLine("(tris.Count<=1)returning bucket node with {0} triangles", tris.Count);
                 return bucket_node;
             }
 
             sp spr = kdtree.spread(tris);
-            System.Console.WriteLine("cuttting along dim={0} spread={1}", spr.d, spr.val);
+            //System.Console.WriteLine("cuttting along dim={0} spread={1}", spr.d, spr.val);
 
             // if the max spread is 0, return a bucket node (?when does this happen?)
-            if (spr.val < 0.2)
+            if (spr.val == 0.0)
             {
                 kd_node bucket_node = new kd_node(0, 0, null, null, tris);
-                System.Console.WriteLine("returning bucket node with {0} triangles", tris.Count);
+                //System.Console.WriteLine("(spr.val==0) returning bucket node with {0} triangles", tris.Count);
                 return bucket_node;
             }
             
@@ -74,7 +74,7 @@ namespace monoCAM
 
             // otherwise, select at which triangle to cut
             double cv=spr.start+spr.val/2;
-            System.Console.WriteLine("cutvalue={0}",cv);
+            //System.Console.WriteLine("cutvalue={0}",cv);
             
 
             // build lists of triangles lower and higher than cutval
@@ -120,7 +120,7 @@ namespace monoCAM
             kd_node node = new kd_node();
             node.dim = spr.d;
             node.cutval = cv;
-            System.Console.WriteLine("hi_count={0}  lo_count={1}", tris_hi.Count, tris_lo.Count);
+            //System.Console.WriteLine("hi_count={0}  lo_count={1}", tris_hi.Count, tris_lo.Count);
             // System.Console.ReadKey();
 
             node.hi = build_kdtree(tris_hi);
@@ -169,11 +169,11 @@ namespace monoCAM
                 return new sp(0,0,0);
             else
             {
-                System.Console.WriteLine("calculating spread for {0} triangles", tris.Count);
+                //System.Console.WriteLine("calculating spread for {0} triangles", tris.Count);
                 int n = 1;
                 foreach (Tri t in tris)
                 {
-                    
+                    t.calc_bbox();
                     if (n == 1)
                     {
                         // on the first iteration assing all values from the first triangle
@@ -230,12 +230,12 @@ namespace monoCAM
                     n = n + 1;
                 }
                 
-                System.Console.WriteLine("spr_xplus={0}", spr_xplus);
-                System.Console.WriteLine("spr_xminus={0}", spr_xminus);
-                System.Console.WriteLine("spr_yplus={0}", spr_yplus);
-                System.Console.WriteLine("spr_yminus={0}", spr_yminus);
+                //System.Console.WriteLine("spr_xplus={0}", spr_xplus);
+                //System.Console.WriteLine("spr_xminus={0}", spr_xminus);
+                //System.Console.WriteLine("spr_yplus={0}", spr_yplus);
+                //System.Console.WriteLine("spr_yminus={0}", spr_yminus);
 
-                // find max spread and return dimension and cut value
+                // find max spread and return dimension, spread, and cut value
                 List<sp> spreads = new List<sp>();
                 spreads.Add(new sp(0, spr_xplus,min_xplus));
                 spreads.Add(new sp(1, spr_xminus,min_xminus));
@@ -244,7 +244,7 @@ namespace monoCAM
                 spreads.Sort(sp_comp);
 
  
-                System.Console.WriteLine("returning dim={0} spr={1}", spreads[spreads.Count - 1].d, spreads[spreads.Count - 1].val);
+                //System.Console.WriteLine("returning dim={0} spr={1}", spreads[spreads.Count - 1].d, spreads[spreads.Count - 1].val);
                 return spreads[spreads.Count-1];
             }
             
@@ -254,14 +254,19 @@ namespace monoCAM
 
         public static void PrintKdtree(kd_node root)
         {
-            if (root.tris == null)
-                return;
+            //if (root.tris == null)
+            //    return;
 
-            if (root.tris.Count > 0)
-                System.Console.WriteLine("bucket node with {0} tris", root.tris.Count);
-
+            if (root.tris != null)
+            {
+                if (root.tris.Count > 0)
+                    System.Console.WriteLine("bucket node with {0} tris", root.tris.Count);
+            }
             if (root.hi != null)
                 PrintKdtree(root.hi);
+
+            if (root.lo != null)
+                PrintKdtree(root.lo);
         }
 
     }
