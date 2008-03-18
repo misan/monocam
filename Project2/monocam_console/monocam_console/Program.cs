@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Diagnostics;
 
 namespace monoCAM
 {
@@ -13,7 +13,7 @@ namespace monoCAM
             System.Console.WriteLine("MonoCAM 2008 Mar 03");
 
             // load an STL file
-            System.String FileName = "Demo.stl";
+            System.String FileName = "Demo6.stl";
             System.Console.WriteLine("opening STL");
             System.IO.StreamReader rdr = file_open(FileName);
             STLSurf s = null;
@@ -28,17 +28,42 @@ namespace monoCAM
             WriteGeoColl(g);
 
             // try a cam operation
-            camtest.run(g);
+            //camtest.run(g);
 
-            WriteGeoColl(g);
+            //WriteGeoColl(g);
 
             // test kd-tree
             // kdtree.spread(s.tris, cutdim.MINUS_X);
 
-            kd_node root = kdtree.build_kdtree(s.tris);
-
+            List<long> times =new List<long>();
+            int jmax = 10;
+            for (int j=0;j<jmax;j++)
+            {
+                Stopwatch st = new Stopwatch();
+                Console.WriteLine("Stopwatch start");
+                
+                st.Start();
+                kd_node root;
+                root = kdtree.build_kdtree(s.tris);
+                st.Stop();
+                Console.WriteLine("Elapsed = {0}", st.Elapsed.ToString());
+                times.Add(st.ElapsedMilliseconds);
+              
+                if (Stopwatch.IsHighResolution)
+                    Console.WriteLine("Timed with Hi res");
+                else
+                    Console.WriteLine("Not Timed with Hi res");
+            }
+            long timesum=0;
+            foreach (long t in times)
+            {
+                Console.WriteLine("time={0}", t);
+                timesum += t;
+            }
+            Console.WriteLine("avg={0}", (double)timesum / (double)jmax);
             // display the kd_tree
-            kdtree.PrintKdtree(root);
+
+            //kdtree.PrintKdtree(root);
 
             // wait for user to end program
             System.Console.WriteLine("Press any key to end");
