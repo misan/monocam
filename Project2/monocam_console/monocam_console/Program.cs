@@ -13,12 +13,12 @@ namespace monoCAM
             System.Console.WriteLine("MonoCAM 2008 Mar 03");
 
             // load an STL file
-            System.String FileName = "Demo6.stl";
-            System.Console.WriteLine("opening STL");
+            System.String FileName = "Demo1.stl";
+            System.Console.WriteLine("opening STL file {0}",FileName);
             System.IO.StreamReader rdr = file_open(FileName);
             STLSurf s = null;
             if (rdr != null)
-                s = STL.Load(rdr);
+                s = STL.Load(rdr); 
             if (s != null)
                 g.add(s);
             else
@@ -35,32 +35,32 @@ namespace monoCAM
             // test kd-tree
             // kdtree.spread(s.tris, cutdim.MINUS_X);
 
-            List<long> times =new List<long>();
-            int jmax = 10;
-            for (int j=0;j<jmax;j++)
+
+            Stopwatch st = new Stopwatch();
+            Console.WriteLine("Building kd-tree. Stopwatch start");
+            st.Start();
+            kd_node root;
+            root = kdtree.build_kdtree(s.tris);
+            st.Stop();
+            Console.WriteLine("Elapsed = {0}", st.Elapsed.ToString());
+
+            //kdtree.PrintKdtree(root);
+
+            Cutter c = new Cutter(0.1, 0);
+            Point p = new Point(0, 0, 0);
+            List<Tri> tris = new List<Tri>();
+            kdtree.search_kdtree(tris, p, c, root);
+            System.Console.WriteLine("found {0} triangles!", tris.Count);
+            System.Console.WriteLine("ns={0}",kdtree.ns);
+            if (tris.Count <= 10)
             {
-                Stopwatch st = new Stopwatch();
-                Console.WriteLine("Stopwatch start");
-                
-                st.Start();
-                kd_node root;
-                root = kdtree.build_kdtree(s.tris);
-                st.Stop();
-                Console.WriteLine("Elapsed = {0}", st.Elapsed.ToString());
-                times.Add(st.ElapsedMilliseconds);
-              
-                if (Stopwatch.IsHighResolution)
-                    Console.WriteLine("Timed with Hi res");
-                else
-                    Console.WriteLine("Not Timed with Hi res");
+                foreach (Tri t in tris)
+                {
+                    Console.WriteLine("x: " + t.bb.minx + " / " + t.bb.maxx + " " + (p.x - c.R) + "to" + (p.x + c.R));
+                    Console.WriteLine("y: " + t.bb.miny + " / " + t.bb.maxy + " " + (p.y - c.R) + "to" + (p.y + c.R));
+                }
             }
-            long timesum=0;
-            foreach (long t in times)
-            {
-                Console.WriteLine("time={0}", t);
-                timesum += t;
-            }
-            Console.WriteLine("avg={0}", (double)timesum / (double)jmax);
+            
             // display the kd_tree
 
             //kdtree.PrintKdtree(root);

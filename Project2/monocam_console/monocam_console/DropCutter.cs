@@ -26,7 +26,7 @@ using System.Text;
 
 namespace monoCAM
 {
-    class Cutter
+    public class Cutter
     {
         // This is a toroidal cutter.
         // R is the shaft radius

@@ -229,7 +229,7 @@ namespace monoCAM
 
        public override string ToString()
        {
-           return "bb.minx=" + bb.minx.ToString() + " bb.maxx=" + bb.maxx.ToString();
+           return "bb.minx=" + bb.minx.ToString() + " bb.maxx=" + bb.maxx.ToString() + "bb.miny=" + bb.miny.ToString() + " bb.maxy=" + bb.maxy.ToString();
        }
 
    } // end Tri
