@@ -28,7 +28,7 @@ namespace monoCAM
             WriteGeoColl(g);
 
             // try a cam operation
-            //camtest.run(g);
+            camtest.run(g);
 
             //WriteGeoColl(g);
 
@@ -36,16 +36,11 @@ namespace monoCAM
             // kdtree.spread(s.tris, cutdim.MINUS_X);
 
 
-            Stopwatch st = new Stopwatch();
-            Console.WriteLine("Building kd-tree. Stopwatch start");
-            st.Start();
-            kd_node root;
-            root = kdtree.build_kdtree(s.tris);
-            st.Stop();
-            Console.WriteLine("Elapsed = {0}", st.Elapsed.ToString());
+
 
             //kdtree.PrintKdtree(root);
 
+            /*
             Cutter c = new Cutter(1.5, 0);
             Point p = new Point(0, 0, 0);
             List<Tri> tris = new List<Tri>();
@@ -60,7 +55,8 @@ namespace monoCAM
                     Console.WriteLine("y: " + t.bb.miny + " / " + t.bb.maxy + " " + (p.y - c.R) + "to" + (p.y + c.R));
                 }
             }
-            
+            */
+
             // display the kd_tree
 
             //kdtree.PrintKdtree(root);

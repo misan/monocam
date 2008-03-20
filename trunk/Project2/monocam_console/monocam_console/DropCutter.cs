@@ -435,6 +435,8 @@ namespace monoCAM
         public static bool isinside(Tri t, Point p)
         {
             // point in triangle test
+            // returns true if the xy projection of point p is inside 
+            // the xy projection of triangle t
 
             // a new Tri projected onto the xy plane:
             Point p1 = new Point(t.p[0].x, t.p[0].y, 0);
