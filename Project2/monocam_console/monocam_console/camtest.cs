@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using System;
 using System.Text;
+using System.IO;
+using System.Globalization;
+using System.Threading;
+using System.Diagnostics;
 
 
 namespace monoCAM
@@ -8,6 +12,8 @@ namespace monoCAM
 
     public static class camtest
     {
+        static public TextWriter outfile;
+
         public static void run(GeoCollection g)
         {
             // find all STL surfaces and runs stlmachine on them
@@ -21,12 +27,14 @@ namespace monoCAM
                         surfs.Add((STLSurf)s);
                     }
             }
+            camtest.outfile = new StreamWriter("cam.txt");
 
             foreach (STLSurf s in surfs)
             {
                 camtest.stlmachine(s,g);
             }
             System.Console.Write("Done.\n");
+            camtest.outfile.Close();
 
         }
 
@@ -65,8 +73,8 @@ namespace monoCAM
 
             // generate XY pattern (a general zigzag-strategy, needed also for pocketing)
             // store in a list called pointlist
-            double Nx=3;
-            double Ny=3;
+            double Nx=30;
+            double Ny=40;
             double dx=(maxx-minx)/(double)(Nx-1);
             double dy = (maxy - miny) / (double)(Ny-1);
             double x = minx;
@@ -107,10 +115,24 @@ namespace monoCAM
             double redundant = 0; // number of unneccesary calls to drop-cutter
             double checks = 0;    // number of relevant calls
 
+            // build the kd-tree
+            Stopwatch st = new Stopwatch();
+            Console.WriteLine("Building kd-tree. Stopwatch start");
+            st.Start();
+            kd_node root;
+            root = kdtree.build_kdtree(s.tris);
+            st.Stop();
+            Console.WriteLine("Elapsed = {0}", st.Elapsed.ToString());
+
+
+
+
             // FIXME: these calls to drop-cutter are independent of each other
             // thus the points could/should be divided into many subsets
             // and each subset is processed by a seprarate thread
             // this should give a substantial speedup on multi-core cpus
+            Console.WriteLine("Running drop-cutter. Stopwatch start");
+            st.Start();
             foreach (Point p in pointlist) // loop through each point
             {
                 double? v1 = null,v2=null,v3=null,z_new=null,f=null,e1=null,e2=null,e3=null;
@@ -119,11 +141,27 @@ namespace monoCAM
                 // the highest one of these should be chosen in the end
                 List<double> zlist = new List<double>();
                 
+                // find triangles under cutter using kd-tree
+
+
+                int mode = 1;
+                List<Tri> tris_to_search = new List<Tri>();
+
+                if (mode == 0)
+                {
+                    tris_to_search = s.tris;
+                }
+                else if (mode == 1)
+                {
+                    kdtree.search_kdtree(tris_to_search, p, cu, root);
+                }
+                //Console.WriteLine("searching {0} tris",tris_to_search.Count);
+                //Console.ReadKey();
+
+
+
                 // loop through each triangle
-                // FIXME: here a bucketing-scheme or a kd-tree search should
-                // be implemented so that only triangles really under the cutter
-                // are tested against.
-                foreach (Tri t in s.tris)
+                foreach (Tri t in tris_to_search)
                 {
                     checks++;
                     t.calc_bbox(); // FIXME: why do we have to re-calculate bb-data here??
@@ -212,7 +250,8 @@ namespace monoCAM
 
 
             } // end point-list loop
-
+            st.Stop();
+            Console.WriteLine("Elapsed = {0}", st.Elapsed.ToString());
 
             // print some statistics:
             System.Console.WriteLine("checked: "+ checks + " redundant: " + redundant);
@@ -226,18 +265,34 @@ namespace monoCAM
             // that has rapids/feeds according to the points calculated above
             int i = 1;
             Point p0=new Point();
+
+            // this is needed so we get decimal points, not commas
+            System.Globalization.CultureInfo glob = new System.Globalization.CultureInfo("en-GB");
+            Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-GB");
+
             foreach (Point p in drop_points)
             {
                 
                 if (i == 1) // first move
                 {
-                    p0 = new Point(p.x, p.y, 10);
+                    p0 = new Point(p.x, p.y, 12);
+                    
+                    camtest.outfile.WriteLine("Cylinder");
+                    camtest.outfile.WriteLine("{0},{1},{2}", p0.x.ToString("0.000", glob), p0.y.ToString("0.000", glob), p0.z.ToString("0.000", glob));
+                    camtest.outfile.WriteLine("{0}", 0.01.ToString("0.000", glob));
+                    camtest.outfile.WriteLine("{0},{1},{2}", p.x.ToString("0.000", glob), p.y.ToString("0.000", glob), p.z.ToString("0.000", glob));
                     Line l = new Line(p0, p);
                     g.add(l); //  ADD geometry to toolpath
+
                     p0 = p;
                 }
-                else  // don't do anything for last move
+                else  
                 {
+
+                    camtest.outfile.WriteLine("Cylinder");
+                    camtest.outfile.WriteLine("{0},{1},{2}", p0.x.ToString("0.000", glob), p0.y.ToString("0.000", glob), p0.z.ToString("0.000", glob));
+                    camtest.outfile.WriteLine("{0}", 0.01.ToString("0.000", glob));
+                    camtest.outfile.WriteLine("{0},{1},{2}", p.x.ToString("0.000", glob), p.y.ToString("0.000", glob), p.z.ToString("0.000", glob));
                     Line l = new Line(p0, p);
                     g.add(l);  // ADD geometry to toolpath
                     p0 = p;
