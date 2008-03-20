@@ -46,7 +46,7 @@ namespace monoCAM
 
             //kdtree.PrintKdtree(root);
 
-            Cutter c = new Cutter(0.1, 0);
+            Cutter c = new Cutter(1.5, 0);
             Point p = new Point(0, 0, 0);
             List<Tri> tris = new List<Tri>();
             kdtree.search_kdtree(tris, p, c, root);

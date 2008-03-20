@@ -290,7 +290,19 @@ namespace monoCAM
                 if (node.tris.Count > 0)
                 {   // add all triangles of a bucket node
                     foreach (Tri t in node.tris)
-                        tlist.Add(t);
+                    {
+                        // check that t belongs 
+                        if ((p.x + c.R) < t.bb.minx)
+                            return;
+                        else if ((p.x - c.R) > t.bb.maxx)
+                            return;
+                        else if ((p.y + c.R) < t.bb.miny)
+                            return;
+                        else if ((p.y - c.R) > t.bb.maxy)
+                            return;
+                        else
+                            tlist.Add(t);
+                    }
                     return;
                 }
             }
@@ -298,28 +310,39 @@ namespace monoCAM
             switch (node.dim)
             {
                 case 0: // cut along xplus
-                    if (node.cutval >= p.x - c.R)
-                        search_kdtree(tlist, p, c, node.lo);
-                    if (node.cutval <= p.x + c.R)
+                    if (node.cutval <= p.x - c.R)
                         search_kdtree(tlist, p, c, node.hi);
+                    else
+                    {
+                        search_kdtree(tlist, p, c, node.hi);
+                        search_kdtree(tlist, p, c, node.lo);
+                    }
                     break;
                 case 1: // cut along xminus
-                    if (node.cutval >= p.x - c.R)
+                    if (node.cutval >= p.x + c.R)
                         search_kdtree(tlist, p, c, node.lo);
-                    if (node.cutval <= p.x + c.R)
+                    else
+                    {
                         search_kdtree(tlist, p, c, node.hi);
+                        search_kdtree(tlist, p, c, node.lo);
+                    }
                     break;
                 case 2: // cut along yplus
-                    if (node.cutval >= p.y - c.R)
-                        search_kdtree(tlist, p, c, node.lo);
-                    if (node.cutval <= p.y + c.R)
+                    if (node.cutval <= p.y - c.R)
                         search_kdtree(tlist, p, c, node.hi);
+                    else
+                    {
+                        search_kdtree(tlist, p, c, node.hi);
+                        search_kdtree(tlist, p, c, node.lo);
+                    }
                     break;
                 case 3: // cut along yminus
-                    if (node.cutval >= p.y - c.R)
+                    if (node.cutval >= p.y + c.R)
                         search_kdtree(tlist, p, c, node.lo);
-                    if (node.cutval <= p.y + c.R)
+                    {
                         search_kdtree(tlist, p, c, node.hi);
+                        search_kdtree(tlist, p, c, node.lo);
+                    }
                     break;
             }
             return;
